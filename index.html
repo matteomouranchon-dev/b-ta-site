@@ -56,7 +56,11 @@
         <li class="nav-item"><a class="nav-link" href="#projects">Projets</a></li>
         <li class="nav-item"><a class="nav-link" href="#experience">Expérience</a></li>
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-        <li class="nav-item"><a class="btn btn-sm btn-primary ms-lg-3" id="btn-cv">Télécharger mon CV</a></li>
+       <li class="nav-item">
+  <button class="btn btn-sm btn-primary ms-lg-3" data-bs-toggle="modal" data-bs-target="#downloadModal">
+    Télécharger
+  </button>
+</li>
       </ul>
     </div>
   </div>
@@ -75,7 +79,9 @@
         </div>
       </div>
       <div class="col-md-4 text-md-end text-center">
-        <img class="avatar" src="data:image/jpeg;base64>
+        <img class="avatar" src="data:iMy photo/jpg;base64,alt="Photo de Mattéo Mouranchon">
+      </div>
+    </div>
   </div>
 </header>
 
@@ -323,17 +329,31 @@
 <!-- Bootstrap 5 Bundle (JS) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<!-- Custom JS: trigger CV download (using embedded base64, immediate) -->
-<script>
-  const CV_DATA_URI = "data:application/pdf;base64;
-  document.getElementById('btn-cv').addEventListener('click', () => { 
-    const a = document.createElement('a');
-    a.href = CV_DATA_URI;
-    a.download = "Matteo_Mouranchon_CV.pdf";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  });
 </script>
 </body>
+<!-- Fenêtre modale Télécharger -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="downloadModalLabel">Téléchargements disponibles</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <a href="CV portfolio final.pdf" target="_blank">📄 Mon CV</a>
+          </li>
+          <li class="list-group-item">
+            <a href="CompteRendu1.pdf" target="_blank">📝 Compte rendu 1</a>
+          </li>
+          <li class="list-group-item">
+            <a href="CompteRendu2.pdf" target="_blank">📝 Compte rendu 2</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 </html>
