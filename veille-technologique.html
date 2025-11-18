@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Veille technologique — Cyberguerre</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Veille technologique sur la cyberguerre : origine, évolution, conséquences et démarche de veille.">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #0ea5e9;
+      --dark: #0b1220;
+    }
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:#020617;
+      color:#e5e7eb;
+    }
+    .hero-veille {
+      min-height: 45vh;
+      display:flex;
+      align-items:center;
+      background:
+        radial-gradient(1100px 500px at 85% -10%, rgba(14,165,233,.25), transparent),
+        radial-gradient(900px 600px at -10% -20%, rgba(99,102,241,.35), transparent),
+        linear-gradient(180deg, #020617 0%, #020617 45%, #020617 100%);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-overlay {
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at top, rgba(15,23,42,.1), transparent),
+                 linear-gradient(180deg, rgba(15,23,42,.2), rgba(15,23,42,.9));
+    }
+    .hero-content {
+      position:relative;
+      z-index:1;
+      padding:5rem 0 3rem;
+    }
+    .pill {
+      background: rgba(14,165,233,.1);
+      border:1px solid rgba(14,165,233,.35);
+      color:#7dd3fc;
+      padding:.35rem .8rem;
+      border-radius:999px;
+      font-size:.85rem;
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+    }
+    .pill span.badge {
+      font-size:.7rem;
+    }
+    .hero-title {
+      font-weight:800;
+      font-size: clamp(1.9rem, 3vw, 2.5rem);
+    }
+    .hero-subtitle {
+      color:#cbd5f5;
+      max-width: 40rem;
+    }
+    .section-title {
+      font-weight: 800;
+      letter-spacing:.03em;
+    }
+    .section-muted {
+      color:#9ca3af;
+      font-size:.95rem;
+    }
+    .card-dark {
+      background:#020617;
+      border-radius:1rem;
+      border:1px solid rgba(148,163,184,.35);
+      box-shadow:0 18px 45px rgba(15,23,42,.65);
+    }
+    .badge-soft {
+      background:rgba(15,23,42,1);
+      border:1px solid rgba(148,163,184,.5);
+      color:#e5e7eb;
+      font-weight:500;
+    }
+    .timeline {
+      border-left: 2px solid rgba(148,163,184,.6);
+      padding-left:1.5rem;
+      margin-left:.4rem;
+    }
+    .tl-item {
+      position:relative;
+      margin-bottom:1.5rem;
+    }
+    .tl-item::before {
+      content:"";
+      position:absolute;
+      left:-1.05rem;
+      top:.35rem;
+      width:.8rem;
+      height:.8rem;
+      background:#020617;
+      border-radius:50%;
+      border:2px solid var(--accent);
+    }
+    .pill-tag {
+      border-radius:999px;
+      padding:.15rem .55rem;
+      font-size:.75rem;
+      border:1px solid rgba(148,163,184,.6);
+      color:#e5e7eb;
+    }
+    a.back-link {
+      color:#93c5fd;
+      text-decoration:none;
+      font-size:.9rem;
+    }
+    a.back-link:hover {
+      text-decoration:underline;
+      color:#bfdbfe;
+    }
+    footer {
+      border-top:1px solid rgba(30,64,175,.6);
+      background:#020617;
+      color:#9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Barre simple de retour -->
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a href="index.html#veille" class="back-link d-flex align-items-center">
+      ← Retour au portfolio
+    </a>
+    <span class="navbar-text small text-light">
+      Veille technologique — Cyberguerre
+    </span>
+  </div>
+</nav>
+
+<header class="hero-veille">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <div class="row align-items-center gy-4">
+      <div class="col-lg-8">
+        <div class="pill mb-3">
+          <span class="badge rounded-pill bg-info text-dark">Veille technologique</span>
+          Cyberguerre · Sécurité · Géopolitique
+        </div>
+        <h1 class="hero-title mb-3">Cyberguerre : entre conflit numérique et enjeux mondiaux</h1>
+        <p class="hero-subtitle">
+          Cette veille technologique analyse la <strong>cyberguerre</strong> : quand elle apparaît,
+          comment elle a évolué, qui sont les principaux acteurs, et quelles sont ses conséquences
+          pour les États, les entreprises et les citoyens.
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="py-5">
+  <div class="container">
+
+    <!-- 1. Introduction & méthode de veille -->
+    <section class="mb-5">
+      <h2 class="section-title mb-3">1. Objectif & méthode de veille</h2>
+      <p class="section-muted">
+        L’objectif de cette veille est de comprendre comment la <strong>cyberguerre</strong> est devenue un
+        enjeu majeur pour la sécurité des systèmes d’information et pour la stabilité internationale.
+        Elle s’inscrit dans le cadre du BTS SIO, option SISR, et fait le lien entre la partie
+        <em>systèmes & réseaux</em> et les enjeux de <em>cybersécurité</em>.
+      </p>
+      <div class="row g-4 mt-3">
+        <div class="col-md-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Axes de la veille</h5>
+            <ul class="mb-0 small">
+              <li>Origine et définition de la cyberguerre</li>
+              <li>Évolution des attaques et des moyens de défense</li>
+              <li>Acteurs : États, groupes APT, cybercriminels</li>
+              <li>Conséquences : géopolitiques, économiques, techniques et sociétales</li>
+              <li>Méthodes et outils de veille utilisés</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Sources utilisées</h5>
+            <ul class="mb-0 small">
+              <li>Rapports d’agences de cybersécurité (ANSSI, ENISA, CISA…)</li>
+              <li>Articles spécialisés en cybersécurité et en géopolitique</li>
+              <li>Publications d’éditeurs et de sociétés de sécurité (Microsoft, CrowdStrike…)</li>
+              <li>Veille d’actualité sur les cyberattaques majeures récentes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Quand commence la cyberguerre -->
+    <section class="mb-5">
+      <h2 class="section-title mb-3">2. Origine de la cyberguerre</h2>
+      <p class="section-muted">
+        La cyberguerre n’apparaît pas d’un seul coup : elle est le résultat d’une évolution progressive
+        des usages de l’informatique et des réseaux dans le domaine militaire et stratégique.
+      </p>
+      <div class="row g-4 mt-2">
+        <div class="col-md-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Des années 1980 aux années 2000</h5>
+            <ul class="small mb-0">
+              <li><strong>Années 1980 :</strong> premiers vers et intrusions à grande échelle, prise de conscience du risque.</li>
+              <li><strong>Années 1990 :</strong> campagnes de cyberespionnage contre des institutions (ex. « Moonlight Maze »).</li>
+              <li><strong>2003 :</strong> premières utilisations assumées de moyens cyber dans le cadre de conflits armés.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">La bascule : 2007–2010</h5>
+            <ul class="small mb-0">
+              <li><strong>2007 — Estonie :</strong> attaques DDoS massives contre des banques et ministères.</li>
+              <li><strong>2008 — Géorgie :</strong> attaques numériques parallèles au conflit armé.</li>
+              <li><strong>2010 — Stuxnet :</strong> première cyberarme connue provoquant des dégâts physiques sur des équipements industriels.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Évolution de la cyberguerre -->
+    <section class="mb-5">
+      <h2 class="section-title mb-3">3. Évolution de la cyberguerre</h2>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Professionnalisation & sophistication</h5>
+            <ul class="small mb-0">
+              <li>Création d’unités cyber dans de nombreux États.</li>
+              <li>Apparition de groupes APT (<em>Advanced Persistent Threats</em>) dédiés à l’espionnage et au sabotage.</li>
+              <li>Utilisation de plus en plus fréquente de malwares destructeurs et de ransomwares.</li>
+              <li>Attaques ciblant les <strong>infrastructures critiques</strong> (énergie, transport, santé, industrie).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Exemples marquants</h5>
+            <div class="timeline mt-2">
+              <div class="tl-item">
+                <strong>2012 — Shamoon</strong><br>
+                <span class="small text-muted">Destruction de milliers de postes de travail dans une grande entreprise pétrolière.</span>
+              </div>
+              <div class="tl-item">
+                <strong>2015–2016 — Ukraine</strong><br>
+                <span class="small text-muted">Coupures d’électricité causées par des attaques sur les systèmes industriels.</span>
+              </div>
+              <div class="tl-item">
+                <strong>2017 — WannaCry & NotPetya</strong><br>
+                <span class="small text-muted">Propagation mondiale de ransomwares avec des impacts économiques majeurs.</span>
+              </div>
+              <div class="tl-item">
+                <strong>Depuis 2022 — Conflit en Ukraine</strong><br>
+                <span class="small text-muted">Cyberguerre persistante impliquant États et groupes affiliés, en parallèle du conflit armé.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Acteurs & types d’opérations -->
+    <section class="mb-5">
+      <h2 class="section-title mb-3">4. Acteurs & types d’opérations</h2>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Principaux acteurs</h5>
+            <ul class="small mb-0">
+              <li><strong>États :</strong> développent des capacités offensives et défensives dédiées.</li>
+              <li><strong>Groupes APT :</strong> souvent liés à des États, spécialisés dans l’espionnage et le sabotage.</li>
+              <li><strong>Cybercriminels :</strong> motivés par l’argent, mais pouvant servir de relais ou de couverture.</li>
+              <li><strong>Hacktivistes :</strong> groupes militants qui mènent des actions symboliques ou politiques.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Types d’opérations</h5>
+            <ul class="small mb-2">
+              <li>Attaques DDoS pour saturer des services en ligne.</li>
+              <li>Intrusions APT et vol de données sensibles (espionnage).</li>
+              <li>Ransomwares et wipers (chiffrement ou destruction de données).</li>
+              <li>Attaques sur les systèmes industriels (ICS/SCADA).</li>
+              <li>Opérations d’influence et de désinformation (réseaux sociaux, fuites ciblées).</li>
+            </ul>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              <span class="pill-tag">DDoS</span>
+              <span class="pill-tag">APT</span>
+              <span class="pill-tag">Ransomware</span>
+              <span class="pill-tag">ICS / OT</span>
+              <span class="pill-tag">Désinformation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Conséquences -->
+    <section class="mb-5">
+      <h2 class="section-title mb-3">5. Conséquences de la cyberguerre</h2>
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Géopolitiques</h5>
+            <p class="small mb-0">
+              La cyberguerre devient un outil de puissance : pression sur les États, sanctions,
+              réponses diplomatiques. Le cyberespace est désormais considéré comme un
+              <strong>domaine d’opérations</strong> au même titre que la terre, la mer ou l’air.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Économiques</h5>
+            <p class="small mb-0">
+              Les attaques peuvent coûter des millions d’euros à une seule entreprise :
+              interruption d’activité, restauration, perte d’image, sanctions réglementaires.
+              Le marché de la cybersécurité est en forte croissance.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card card-dark p-3 h-100">
+            <h5 class="mb-2">Sociétales & techniques</h5>
+            <p class="small mb-0">
+              Perte de confiance dans les services numériques, exposition des données
+              personnelles, impact sur la santé (attaque de systèmes hospitaliers), nécessité
+              de renforcer l’architecture des systèmes d’information (segmentation, Zero Trust, etc.).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Ce que j’en retiens pour le BTS SIO SISR -->
+    <section class="mb-4">
+      <h2 class="section-title mb-3">6. Apports pour ma formation (BTS SIO SISR)</h2>
+      <p class="section-muted">
+        Cette veille m’a permis de mieux comprendre que la sécurité informatique ne se limite pas
+        à « installer un antivirus » ou « mettre un mot de passe ». La cyberguerre montre que
+        la sécurité est désormais un enjeu <strong>stratégique</strong> pour les entreprises et les États.
+      </p>
+      <ul class="small">
+        <li>Importance de <strong>sauvegardes fiables</strong> et de plans de reprise d’activité.</li>
+        <li>Nécessité de <strong>segmenter le réseau</strong> et de limiter les privilèges.</li>
+        <li>Veille continue sur les vulnérabilités et mises à jour de sécurité.</li>
+        <li>Documentation, procédures et sensibilisation des utilisateurs.</li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<footer class="py-3 mt-4">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <small>© <span id="year"></span> — Veille technologique · Cyberguerre</small>
+    <a href="index.html#veille" class="back-link">Retour au portfolio</a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
