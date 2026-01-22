@@ -33,20 +33,9 @@
   .tl-item::before { content:""; position:absolute; left:-.15rem; top:.35rem; width:.8rem; height:.8rem; background:#fff; border:3px solid var(--accent); border-radius:50%; }
   .skill-bar { height: .75rem; background: #e9ecef; border-radius: 999px; overflow:hidden; }
   .skill-fill { height:100%; background: linear-gradient(90deg, var(--accent), #22c55e); }
- .fin-trimestre {position: relative; width: 100%;border-top: 4px solid #000; }
-.fin-trimestre span { position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  background: #fff;
-  padding: 0 12px;
-  font-weight: 700;
-  color: #000;
-  white-space: nowrap; }
-.fin-trimestre hr { border: none; border-top: 4px solid #000; margin: 0; }
-
-  .project-card img { object-fit: cover; height: 0px; }
+.fin-trimestre { position: relative; width: 100%; margin: 2rem 0; border-top: 4px solid #000;}
+.fin-trimestre span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 0 12px; font-weight: 700; color: #000; white-space: nowrap;}
+ .project-card img { object-fit: cover; height: 0px; }
   .footer { background:#0f172a; color:#cbd5e1; }
   .footer a { color:#94a3b8; }
 </style>
@@ -495,9 +484,8 @@
       </div>
     </div>
   </div>      
-<<hr class="fin-trimestre">
-   <span>Fin du 1er trimestre</span>
-  <hr>
+<div class="fin-trimestre">
+  <span>Fin du 1er trimestre</span>
 </div>
 </section>
   <div class="container">
