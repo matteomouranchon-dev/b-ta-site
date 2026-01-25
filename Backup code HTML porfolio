@@ -33,7 +33,9 @@
   .tl-item::before { content:""; position:absolute; left:-.15rem; top:.35rem; width:.8rem; height:.8rem; background:#fff; border:3px solid var(--accent); border-radius:50%; }
   .skill-bar { height: .75rem; background: #e9ecef; border-radius: 999px; overflow:hidden; }
   .skill-fill { height:100%; background: linear-gradient(90deg, var(--accent), #22c55e); }
-  .project-card img { object-fit: cover; height: 180px; }
+.fin-trimestre { position: relative; width: 100%; margin: 2rem 0; border-top: 4px solid #000;}
+.fin-trimestre span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 0 12px; font-weight: 700; color: #000; white-space: nowrap;}
+ .project-card img { object-fit: cover; height: 0px; }
   .footer { background:#0f172a; color:#cbd5e1; }
   .footer a { color:#94a3b8; }
 </style>
@@ -55,10 +57,11 @@
         <li class="nav-item"><a class="nav-link" href="#skills">Compétences</a></li>
         <li class="nav-item"><a class="nav-link" href="#projects">Projets</a></li>
         <li class="nav-item"><a class="nav-link" href="#experience">Expérience</a></li>
+        <li class="nav-item"><a class="nav-link" href="#veille">Veille technologique</a></li>
         <li class="nav-item"><a class="nav-link" href="#compte-rendu">Compte-rendu</a></li>
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
        <li class="nav-item">
-  <a class="btn btn-sm btn-primary ms-lg-3" href="pdf/CV portfolio final.pdf" download>
+  <a class="btn btn-sm btn-primary ms-lg-3" href="CV-Mattéo_MOURANCHON.pdf" download>
     Télécharger mon CV
   </a>
 </li>
@@ -169,6 +172,24 @@
   </div>
 </section>
 
+  <section id="experience" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title mb-4">Expérience</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <h6 class="mb-1">Stagiaire — <strong>Sun Valley System</strong>, Gap</h6>
+        <div class="text-muted small mb-2">sept. 2024 – oct. 2024</div>
+        <p class="mb-2">Maintenance préventive/corrective, préparation d’unités centrales & portables, et diverses tâches d’assistance.</p>
+      </div>
+      <div class="tl-item">
+        <h6 class="mb-1">Stagiaire — <strong>Alpes Conseil Informatique</strong>, Gap</h6>
+        <div class="text-muted small mb-2">nov. 2023 – déc. 2023</div>
+        <p class="mb-2">Maintenance préventive et corrective, installation d’infrastructures réseau.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="projects" class="py-5">
   <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-3">
@@ -259,23 +280,23 @@
   </div>
 </section>
 
-<section id="experience" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="section-title mb-4">Expérience</h2>
-    <div class="timeline">
-      <div class="tl-item">
-        <h6 class="mb-1">Stagiaire — <strong>Sun Valley System</strong>, Gap</h6>
-        <div class="text-muted small mb-2">sept. 2024 – oct. 2024</div>
-        <p class="mb-2">Maintenance préventive/corrective, préparation d’unités centrales & portables, et diverses tâches d’assistance.</p>
-      </div>
-      <div class="tl-item">
-        <h6 class="mb-1">Stagiaire — <strong>Alpes Conseil Informatique</strong>, Gap</h6>
-        <div class="text-muted small mb-2">nov. 2023 – déc. 2023</div>
-        <p class="mb-2">Maintenance préventive et corrective, installation d’infrastructures réseau.</p>
-      </div>
-    </div>
+  <!-- Veille technologique -->
+  <section id="veille" class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="section-title mb-4">Veille technologique</h2>
+    <p class="lead text-muted mb-4">
+      Ma veille technologique porte sur la <strong>cyberguerre</strong> : ses origines, son évolution,
+      les acteurs impliqués et ses conséquences dans le monde (géopolitiques, économiques, techniques).
+      J’y présente également ma démarche de veille et les sources utilisées.
+      (Des modifications sont à voir
+    </p>
+     <a href="veille-technologique.html" class="btn btn-primary btn-lg">
+      👉 Consulter ma veille technologique
+    </a>
   </div>
 </section>
+
+<!-- Compte-rendu -->
 <section id="compte-rendu" class="py-5">
   <div class="container">
     <h2 class="section-title mb-4">Compte-rendu</h2>
@@ -379,6 +400,24 @@
           </div>
         </div>
       </div>
+       <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Serveur NAS</h5>
+            <p class="text-muted">Compte-rendu sur le TP Serveur NAS.</p>
+            <a class="btn btn-outline-primary" href="pdf/Compte-rendu-TP2-serveur-NAS.pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+       <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Shifurmi</h5>
+            <p class="text-muted">Compte-rendu sur le shifurmi java</p>
+            <a class="btn btn-outline-primary" href="pdf/Compte-rendu-Shifurmi.pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
         <div class="col-md-4">
         <div class="card shadow-soft h-100">
           <div class="card-body">
@@ -388,11 +427,67 @@
           </div>
         </div>
       </div>
+       <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Exercie Java/bis</h5>
+            <p class="text-muted">Compte-rendu sur les exercie java TP5</p>
+            <a class="btn btn-outline-primary" href="pdf/compte-rendu-exercice-java-bis.pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+       <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Procédure et fonction java</h5>
+            <p class="text-muted">Compte-rendu sur les exercice procédure et fonction java TP6</p>
+            <a class="btn btn-outline-primary" href="pdf/compte-rendu procédure et fonction java TP6.pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+       <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Cachier des charge</h5>
+            <p class="text-muted">Compte-rendu sur le cahier des charges (INCOMPLET).</p>
+            <a class="btn btn-outline-primary" href="pdf/Compte-rendu cahier des charge (incomplet).pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+        <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Bataille navale</h5>
+            <p class="text-muted">Compte-rendu sur le codage Java de la bataille navale.</p>
+            <a class="btn btn-outline-primary" href="pdf/Compte-rendu Bataille navale.pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Cahier des charge</h5>
+            <p class="text-muted">Compte-rendu sur le cahier des charge de l'entreprise GSB (complet).</p>
+            <a class="btn btn-outline-primary" href="pdf/TP cahier des charge (complet).pdf" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+        <div class="col-md-4">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title">Réseaux informatique GSB</h5>
+            <p class="text-muted">Compte-rendu sur le réseaux informatique de l'entreprise GSB à l'incident des clé USB personnelle + rapport d'incident.</p>
+            <a class="btn btn-outline-primary" href="pdf/Compte-rendu Réseaux informatique GSB.pdf" download>Télécharger comte-rendu</a>
+            <a class="btn btn-outline-primary" href="pdf/Rapport_interne_incident_GSB.pdf" download>Télécharger rapport d'incident</a>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </div>      
+<div class="fin-trimestre">
+  <span>Fin du 1er trimestre</span>
+</div>
 </section>
-<section id="contact" class="py-5">
   <div class="container">
     <h2 class="section-title mb-4">Contact</h2>
     <div class="row g-4">
@@ -405,7 +500,7 @@
             <li>📍 Gap / Curbans (05110)</li>
           </ul>
           <div class="d-flex gap-2">
-            <a class="btn btn-outline-dark btn-sm" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn btn-outline-dark btn-sm" href="https://github.com/matteomouranchon-dev" target="_blank" rel="noopener">GitHub</a>
             <a class="btn btn-outline-dark btn-sm" href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
           </div>
         </div>
@@ -475,4 +570,7 @@
 
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
+</html>
+</body>
+</html>
 </html>
