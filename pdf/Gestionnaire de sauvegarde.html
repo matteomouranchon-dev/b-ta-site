@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Backup Vault — Gestionnaire de Sauvegardes</title>
+  <style>
+    /* =========================================================
+       DESIGN 100% DIFFÉRENT :
+       - Sidebar à gauche
+       - Thème dark + néon
+       - Cards + layout dashboard
+       - Tables modernisées
+       ========================================================= */
+
+    :root{
+      --bg0:#070A12;
+      --bg1:#0B1020;
+      --panel:#0E1630cc;
+      --panelSolid:#0E1630;
+      --stroke:#243058;
+      --text:#EAF0FF;
+      --muted:#AAB7E6;
+      --muted2:#7D8BC0;
+
+      --aqua:#34D3FF;
+      --violet:#A78BFA;
+      --pink:#FF4FD8;
+      --lime:#9AFB59;
+      --amber:#FFB020;
+      --red:#FF4D5A;
+
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+      --r12: 12px;
+      --r16: 16px;
+      --r22: 22px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      background:
+        radial-gradient(900px 600px at 15% 15%, rgba(52,211,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(167,139,250,.16), transparent 60%),
+        radial-gradient(900px 600px at 50% 85%, rgba(255,79,216,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      color:var(--text);
+      overflow:hidden;
+    }
+
+    /* App layout */
+    .app{
+      height:100vh;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    /* Sidebar */
+    .side{
+      padding:18px;
+      border-right:1px solid rgba(36,48,88,.65);
+      background: linear-gradient(180deg, rgba(14,22,48,.88), rgba(10,16,36,.78));
+      backdrop-filter: blur(10px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:14px 14px;
+      border:1px solid rgba(36,48,88,.7);
+      border-radius: var(--r16);
+      background: rgba(255,255,255,.03);
+      box-shadow: var(--shadow2);
+    }
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(52,211,255,.9), transparent 60%),
+        radial-gradient(14px 14px at 70% 70%, rgba(255,79,216,.9), transparent 60%),
+        linear-gradient(135deg, rgba(167,139,250,.35), rgba(52,211,255,.25));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 6px rgba(52,211,255,.06);
+    }
+    .brand h1{
+      font-size:1.05rem;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand p{
+      color:var(--muted);
+      font-size:.85rem;
+      margin-top:4px;
+    }
+
+    .nav{
+      margin-top:14px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .nav button{
+      width:100%;
+      text-align:left;
+      border:none;
+      cursor:pointer;
+      padding:12px 12px;
+      border-radius:14px;
+      color:var(--text);
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(36,48,88,.55);
+      transition: .18s ease;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      box-shadow: 0 10px 20px rgba(0,0,0,.22);
+    }
+    .nav button:hover{
+      transform: translateY(-1px);
+      border-color: rgba(52,211,255,.35);
+      background: rgba(52,211,255,.06);
+    }
+    .nav button.active{
+      border-color: rgba(167,139,250,.55);
+      background: linear-gradient(135deg, rgba(167,139,250,.18), rgba(52,211,255,.10));
+      box-shadow: 0 0 0 4px rgba(167,139,250,.10), 0 16px 34px rgba(0,0,0,.35);
+    }
+    .nav .left{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .badge{
+      font-size:.78rem;
+      padding:4px 8px;
+      border-radius:999px;
+      color:var(--muted);
+      border:1px solid rgba(36,48,88,.75);
+      background: rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+    .side .footer{
+      margin-top:auto;
+      padding-top:14px;
+      color:var(--muted2);
+      font-size:.85rem;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(36,48,88,.65);
+      padding:2px 8px;
+      border-radius:10px;
+      color:var(--text);
+      display:inline-block;
+    }
+
+    /* Main */
+    .main{
+      padding:18px;
+      overflow:auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .headline{
+      padding:14px 16px;
+      border-radius: var(--r22);
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(14,22,48,.50);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      flex:1;
+      min-width: 260px;
+    }
+    .headline h2{
+      font-size:1.2rem;
+      letter-spacing:.2px;
+    }
+    .headline .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.35;
+    }
+
+    .quick{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius: 14px;
+      font-weight:900;
+      letter-spacing:.2px;
+      color:var(--text);
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(255,255,255,.04);
+      transition:.16s ease;
+      box-shadow: 0 10px 20px rgba(0,0,0,.22);
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn.primary{
+      border-color: rgba(52,211,255,.45);
+      background: linear-gradient(135deg, rgba(52,211,255,.18), rgba(52,211,255,.08));
+    }
+    .btn.violet{
+      border-color: rgba(167,139,250,.50);
+      background: linear-gradient(135deg, rgba(167,139,250,.20), rgba(52,211,255,.08));
+    }
+    .btn.good{
+      border-color: rgba(154,251,89,.45);
+      background: linear-gradient(135deg, rgba(154,251,89,.18), rgba(154,251,89,.06));
+    }
+    .btn.warn{
+      border-color: rgba(255,176,32,.50);
+      background: linear-gradient(135deg, rgba(255,176,32,.18), rgba(255,176,32,.06));
+    }
+    .btn.bad{
+      border-color: rgba(255,77,90,.55);
+      background: linear-gradient(135deg, rgba(255,77,90,.18), rgba(255,77,90,.06));
+    }
+
+    /* Cards */
+    .card{
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(14,22,48,.52);
+      backdrop-filter: blur(10px);
+      border-radius: var(--r22);
+      box-shadow: var(--shadow2);
+      padding:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .col-12{grid-column: 1 / -1;}
+    .col-6{grid-column: span 6;}
+    .col-4{grid-column: span 4;}
+    .col-3{grid-column: span 3;}
+
+    @media(max-width:1100px){
+      .app{grid-template-columns: 1fr;}
+      .side{display:none;}
+      body{overflow:auto;}
+      .main{height:auto;}
+    }
+    @media(max-width:900px){
+      .col-6,.col-4,.col-3{grid-column: 1 / -1;}
+      .topbar{flex-direction:column;}
+    }
+
+    /* Form */
+    label{
+      display:block;
+      margin-bottom:6px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:.88rem;
+    }
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(36,48,88,.8);
+      background: rgba(7,10,18,.55);
+      color:var(--text);
+      outline:none;
+    }
+    input::placeholder{color:rgba(170,183,230,.55);}
+    input:focus, select:focus{
+      border-color: rgba(52,211,255,.55);
+      box-shadow: 0 0 0 4px rgba(52,211,255,.12);
+    }
+    select[multiple]{min-height:120px;}
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    /* Table */
+    .table-wrap{
+      margin-top:12px;
+      overflow:auto;
+      border-radius: var(--r22);
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(7,10,18,.35);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width: 980px;
+    }
+    thead th{
+      text-align:left;
+      padding:12px 12px;
+      font-size:.9rem;
+      color: var(--text);
+      background: linear-gradient(135deg, rgba(167,139,250,.18), rgba(52,211,255,.10));
+      border-bottom:1px solid rgba(36,48,88,.75);
+      position: sticky; top:0;
+      backdrop-filter: blur(10px);
+    }
+    tbody td{
+      padding:12px 12px;
+      border-bottom:1px solid rgba(36,48,88,.55);
+      color: rgba(234,240,255,.92);
+      vertical-align:top;
+    }
+    tbody tr:hover td{ background: rgba(52,211,255,.05); }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(36,48,88,.75);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size:.82rem;
+      margin:2px 6px 2px 0;
+      white-space:nowrap;
+    }
+    .chip b{color:var(--text); font-size:.8rem;}
+    .status-ok{color: var(--lime); font-weight:1000;}
+    .status-no{color: var(--red); font-weight:1000;}
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(36,48,88,.65);
+      padding:2px 8px;
+      border-radius:10px;
+      color:var(--text);
+      white-space:nowrap;
+    }
+
+    .icon{
+      border:none; cursor:pointer;
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:1000;
+      color:var(--text);
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(255,255,255,.04);
+    }
+    .icon:hover{transform: translateY(-1px);}
+    .icon.edit{border-color: rgba(52,211,255,.45);}
+    .icon.del{border-color: rgba(255,77,90,.55);}
+
+    .empty{
+      padding:16px;
+      color: var(--muted);
+      text-align:center;
+    }
+
+    /* Reports */
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    @media(max-width:900px){ .stats{grid-template-columns: 1fr 1fr;} }
+    @media(max-width:520px){ .stats{grid-template-columns: 1fr;} }
+
+    .stat{
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding:12px;
+    }
+    .stat .k{color: var(--muted); font-weight:800; font-size:.9rem;}
+    .stat .v{margin-top:6px; font-size:1.6rem; font-weight:1000;}
+    .timeline .item{
+      margin-top:10px;
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding:12px;
+    }
+    .timeline .date{font-weight:1000; color: var(--aqua);}
+    .timeline .muted{color: var(--muted); margin-top:4px; font-size:.92rem;}
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(36,48,88,.65);
+      background: rgba(14,22,48,.75);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow2);
+      color:var(--text);
+      opacity:0;
+      transform: translateY(10px);
+      transition:.2s ease;
+      max-width: 520px;
+      z-index:9999;
+      font-weight:800;
+    }
+    .toast.show{opacity:1; transform: translateY(0);}
+
+    /* Print PDF */
+    @media print{
+      body{background:#fff !important; color:#000 !important; overflow:visible;}
+      .side, .topbar, .toast{display:none !important;}
+      .main{padding:0;}
+      .card, .table-wrap{background:#fff !important; box-shadow:none !important; border:1px solid #ddd !important;}
+      table{min-width:0;}
+      thead th{background:#f2f2f2 !important; color:#000 !important;}
+      tbody td{color:#000 !important;}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Backup Vault</h1>
+          <p>Gestionnaire VM & sauvegardes</p>
+        </div>
+      </div>
+
+      <nav class="nav" style="margin-top:14px;">
+        <button class="active" data-tab="vms">
+          <div class="left">🧩 <span>Machines Virtuelles</span></div>
+          <span class="badge" id="count-vm">0</span>
+        </button>
+        <button data-tab="backups">
+          <div class="left">💿 <span>Sauvegardes</span></div>
+          <span class="badge" id="count-bk">0</span>
+        </button>
+        <button data-tab="reports">
+          <div class="left">📈 <span>Rapports</span></div>
+          <span class="badge">HTML/PDF</span>
+        </button>
+        <button data-tab="params">
+          <div class="left">🧰 <span>Paramètres</span></div>
+          <span class="badge">Listes</span>
+        </button>
+        <button data-tab="impexp">
+          <div class="left">🔁 <span>Import/Export</span></div>
+          <span class="badge">JSON</span>
+        </button>
+      </nav>
+
+      <div class="footer">
+        <div>Astuce : export PDF via <span class="kbd">Imprimer</span> → <span class="kbd">Enregistrer en PDF</span></div>
+        <div class="muted2">Stockage : localStorage</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div class="headline">
+          <h2 id="page-title">Machines Virtuelles</h2>
+          <div class="sub" id="page-sub">
+            Ajoute, modifie et supprime des VM. Les données sont sauvegardées automatiquement dans le navigateur.
+          </div>
+        </div>
+        <div class="quick">
+          <button class="btn primary" id="quick-demo">Données d’exemple</button>
+          <button class="btn violet" id="quick-export-json">Export JSON</button>
+          <button class="btn bad" id="quick-reset">Reset</button>
+        </div>
+      </div>
+
+      <!-- TAB: VMS -->
+      <section class="tab-page" id="tab-vms">
+        <div class="grid">
+          <div class="card col-12">
+            <div class="grid">
+              <div class="col-3">
+                <label for="vm-name">Nom VM *</label>
+                <input id="vm-name" type="text" placeholder="Ex: SERVWEB">
+              </div>
+              <div class="col-3">
+                <label for="vm-dedicated">Dédié *</label>
+                <select id="vm-dedicated">
+                  <option value="O">Oui</option>
+                  <option value="N">Non</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <label for="vm-ip">Adresse IP *</label>
+                <input id="vm-ip" type="text" placeholder="Ex: 172.30.100.20">
+              </div>
+              <div class="col-3">
+                <label for="vm-os">Système *</label>
+                <select id="vm-os"></select>
+              </div>
+
+              <div class="col-3">
+                <label for="vm-created">Date création *</label>
+                <input id="vm-created" type="date">
+              </div>
+              <div class="col-9">
+                <label for="vm-services">Services (Ctrl/Cmd multi)</label>
+                <select id="vm-services" multiple></select>
+              </div>
+
+              <div class="col-12 row">
+                <button class="btn good" id="vm-add-btn">➕ Ajouter</button>
+                <button class="btn warn" id="vm-update-btn" style="display:none;">✅ Mettre à jour</button>
+                <button class="btn" id="vm-cancel-btn" style="display:none;">↩ Annuler</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card col-12">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nom</th><th>Dédié</th><th>IP</th><th>Système</th><th>Création</th><th>Services</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="vm-table-body"></tbody>
+              </table>
+              <div class="empty" id="vm-empty">Aucune VM. Ajoute-en une pour commencer.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: BACKUPS -->
+      <section class="tab-page" id="tab-backups" style="display:none;">
+        <div class="grid">
+          <div class="card col-12">
+            <div class="grid">
+              <div class="col-4">
+                <label for="bk-vm">Machine virtuelle *</label>
+                <select id="bk-vm"></select>
+              </div>
+              <div class="col-4">
+                <label for="bk-date">Date/Heure *</label>
+                <input id="bk-date" type="datetime-local">
+              </div>
+              <div class="col-4">
+                <label for="bk-location">Lieu *</label>
+                <select id="bk-location"></select>
+              </div>
+              <div class="col-12">
+                <label for="bk-comment">Commentaire</label>
+                <input id="bk-comment" type="text" placeholder="Ex: Avant mise à jour">
+              </div>
+              <div class="col-12 row">
+                <button class="btn good" id="bk-add-btn">💾 Enregistrer la sauvegarde</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card col-12">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th><th>VM</th><th>Lieu</th><th>Commentaire</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="bk-table-body"></tbody>
+              </table>
+              <div class="empty" id="bk-empty">Aucune sauvegarde enregistrée.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: REPORTS -->
+      <section class="tab-page" id="tab-reports" style="display:none;">
+        <div class="grid">
+          <div class="card col-12">
+            <div class="grid">
+              <div class="col-4">
+                <label for="rp-type">Type de rapport</label>
+                <select id="rp-type">
+                  <option value="all">Toutes les sauvegardes</option>
+                  <option value="selected">VM sélectionnées</option>
+                  <option value="date-range">Par période</option>
+                  <option value="single">Par machine</option>
+                </select>
+              </div>
+
+              <div class="col-4" id="rp-start-wrap" style="display:none;">
+                <label for="rp-start">Date début</label>
+                <input id="rp-start" type="date">
+              </div>
+              <div class="col-4" id="rp-end-wrap" style="display:none;">
+                <label for="rp-end">Date fin</label>
+                <input id="rp-end" type="date">
+              </div>
+
+              <div class="col-4" id="rp-single-wrap" style="display:none;">
+                <label for="rp-single-vm">Machine</label>
+                <select id="rp-single-vm"></select>
+              </div>
+
+              <div class="col-12" id="rp-vm-list-wrap" style="display:none;">
+                <label>Sélection des VM</label>
+                <div class="card" style="background: rgba(7,10,18,.35); border-radius:18px;">
+                  <div class="row">
+                    <button class="btn warn" id="rp-select-all">Tout sélectionner</button>
+                    <button class="btn" id="rp-deselect-all">Tout désélectionner</button>
+                  </div>
+                  <div id="rp-vm-checkboxes" style="margin-top:10px;"></div>
+                </div>
+              </div>
+
+              <div class="col-12 row">
+                <button class="btn primary" id="rp-generate">⚡ Générer</button>
+                <button class="btn violet" id="rp-export-html" style="display:none;">⬇ Export HTML</button>
+                <button class="btn violet" id="rp-export-pdf" style="display:none;">🖨 Export PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card col-12" id="rp-preview" style="display:none;">
+            <h3 style="font-size:1rem; letter-spacing:.2px;">Aperçu du rapport</h3>
+            <div class="stats" id="rp-stats"></div>
+            <div class="timeline" id="rp-timeline"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: PARAMS -->
+      <section class="tab-page" id="tab-params" style="display:none;">
+        <div class="grid">
+          <div class="card col-4">
+            <h3 style="font-size:1rem;">Services</h3>
+            <div style="margin-top:10px;">
+              <label for="p-service">Ajouter</label>
+              <input id="p-service" placeholder="Ex: web">
+              <div class="row">
+                <button class="btn primary" id="p-add-service">Ajouter</button>
+              </div>
+            </div>
+            <div id="p-services-list" style="margin-top:12px;"></div>
+          </div>
+
+          <div class="card col-4">
+            <h3 style="font-size:1rem;">Lieux de sauvegarde</h3>
+            <div style="margin-top:10px;">
+              <label for="p-location">Ajouter</label>
+              <input id="p-location" placeholder="Ex: NAS">
+              <div class="row">
+                <button class="btn primary" id="p-add-location">Ajouter</button>
+              </div>
+            </div>
+            <div id="p-locations-list" style="margin-top:12px;"></div>
+          </div>
+
+          <div class="card col-4">
+            <h3 style="font-size:1rem;">Systèmes</h3>
+            <div style="margin-top:10px;">
+              <label for="p-os">Ajouter</label>
+              <input id="p-os" placeholder="Ex: Windows Server 2003">
+              <div class="row">
+                <button class="btn primary" id="p-add-os">Ajouter</button>
+              </div>
+            </div>
+            <div id="p-os-list" style="margin-top:12px;"></div>
+          </div>
+
+          <div class="card col-12" style="border-color: rgba(255,77,90,.35);">
+            <h3 style="font-size:1rem; color: var(--red);">Zone dangereuse</h3>
+            <p style="margin-top:8px; color: var(--muted); line-height:1.4;">
+              Réinitialise toutes les données (VM, sauvegardes, paramètres). Action irréversible.
+            </p>
+            <div class="row">
+              <button class="btn bad" id="reset-btn">🔥 Réinitialiser</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: IMPORT/EXPORT -->
+      <section class="tab-page" id="tab-impexp" style="display:none;">
+        <div class="grid">
+          <div class="card col-6">
+            <h3 style="font-size:1rem;">Export JSON</h3>
+            <p style="margin-top:8px; color: var(--muted);">Télécharge toutes les données + paramètres.</p>
+            <div class="row">
+              <button class="btn good" id="export-json">⬇ Exporter</button>
+            </div>
+          </div>
+
+          <div class="card col-6">
+            <h3 style="font-size:1rem;">Import JSON</h3>
+            <p style="margin-top:8px; color: var(--muted);">Restaure une sauvegarde JSON (remplace les données actuelles).</p>
+            <div class="row">
+              <button class="btn warn" id="import-json-btn">♻ Importer</button>
+              <input type="file" id="import-file" accept=".json" style="display:none;">
+            </div>
+          </div>
+
+          <div class="card col-12">
+            <h3 style="font-size:1rem;">Statut</h3>
+            <p id="impexp-status" style="margin-top:8px; color: var(--muted);">Aucun import/export en cours.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===========================
+    //  DATA + STORAGE
+    // ===========================
+    const STORAGE_KEY = "vm_backup_manager_v2_neon";
+
+    function defaultData(){
+      return {
+        virtualMachines: [],
+        backups: [],
+        settings: {
+          services: ["web","ftp","ssh","dns","mail","database"],
+          backupLocations: ["NAS","Cloud","Disque local","Site distant"],
+          operatingSystems: ["Windows Server 2003","Windows Server 2019","Ubuntu Server 20.04","Debian 12","Windows 10"]
+        }
+      };
+    }
+
+    let appData = loadData();
+
+    function loadData(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return defaultData();
+        const parsed = JSON.parse(raw);
+        if(!parsed.settings || !Array.isArray(parsed.virtualMachines) || !Array.isArray(parsed.backups)) return defaultData();
+        return parsed;
+      }catch{
+        return defaultData();
+      }
+    }
+
+    function saveData(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      refreshBadges();
+    }
+
+    // ===========================
+    //  HELPERS
+    // ===========================
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 2200);
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, s => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[s]));
+    }
+
+    function nowLocalDatetimeValue(){
+      const now = new Date();
+      const local = new Date(now.getTime() - now.getTimezoneOffset()*60000);
+      return local.toISOString().slice(0,16);
+    }
+    function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+    function isValidIPv4(ip){
+      const re = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/;
+      return re.test(ip.trim());
+    }
+    function uniq(arr){ return [...new Set(arr)]; }
+
+    function refreshBadges(){
+      $("count-vm").textContent = String(appData.virtualMachines.length);
+      $("count-bk").textContent = String(appData.backups.length);
+    }
+
+    // ===========================
+    //  NAV (SPA)
+    // ===========================
+    function setPage(tab){
+      document.querySelectorAll(".tab-page").forEach(p => p.style.display = "none");
+      const page = document.getElementById("tab-" + tab);
+      if(page) page.style.display = "block";
+
+      // Sidebar active
+      document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+      const btn = document.querySelector(`.nav button[data-tab="${tab}"]`);
+      if(btn) btn.classList.add("active");
+
+      // Titles
+      const titles = {
+        vms: ["Machines Virtuelles", "Ajoute, modifie et supprime des VM. Validation IP + dates cohérentes."],
+        backups: ["Sauvegardes", "Enregistre une sauvegarde pour une VM, avec lieu + commentaire."],
+        reports: ["Rapports", "4 types de rapports + recommandations + export HTML/PDF."],
+        params: ["Paramètres", "Gère les listes (services, lieux, systèmes) et la réinitialisation."],
+        impexp: ["Import / Export", "Sauvegarde/Restaurer toutes les données au format JSON."]
+      };
+      $("page-title").textContent = titles[tab][0];
+      $("page-sub").textContent = titles[tab][1];
+
+      // Refresh UI depending
+      if(tab === "vms") populateVmSelectors();
+      if(tab === "backups") populateBackupSelectors();
+      if(tab === "reports") prepareReportsUI();
+      if(tab === "params") renderSettings();
+    }
+
+    function initNav(){
+      document.querySelectorAll(".nav button").forEach(b=>{
+        b.addEventListener("click", ()=> setPage(b.dataset.tab));
+      });
+    }
+
+    // ===========================
+    //  VM CRUD
+    // ===========================
+    let editVmId = null;
+
+    function populateVmSelectors(){
+      const osSel = $("vm-os");
+      osSel.innerHTML = `<option value="">Sélectionnez un OS</option>`;
+      appData.settings.operatingSystems.forEach(os=>{
+        const o = document.createElement("option");
+        o.value = os; o.textContent = os;
+        osSel.appendChild(o);
+      });
+
+      const svcSel = $("vm-services");
+      svcSel.innerHTML = "";
+      appData.settings.services.forEach(s=>{
+        const o = document.createElement("option");
+        o.value = s; o.textContent = s;
+        svcSel.appendChild(o);
+      });
+    }
+
+    function resetVmForm(){
+      $("vm-name").value = "";
+      $("vm-dedicated").value = "O";
+      $("vm-ip").value = "";
+      $("vm-os").value = "";
+      $("vm-created").value = todayISO();
+      Array.from($("vm-services").options).forEach(o=>o.selected=false);
+
+      editVmId = null;
+      $("vm-add-btn").style.display = "inline-block";
+      $("vm-update-btn").style.display = "none";
+      $("vm-cancel-btn").style.display = "none";
+    }
+
+    function getSelectedServices(){
+      return Array.from($("vm-services").selectedOptions).map(o=>o.value);
+    }
+
+    function addVm(){
+      const name = $("vm-name").value.trim();
+      const dedicated = $("vm-dedicated").value;
+      const ip = $("vm-ip").value.trim();
+      const os = $("vm-os").value;
+      const created = $("vm-created").value;
+      const services = uniq(getSelectedServices());
+
+      if(!name || !ip || !os || !created){
+        alert("Veuillez remplir tous les champs obligatoires (*).");
+        return;
+      }
+      if(!isValidIPv4(ip)){
+        alert("Adresse IP invalide. Exemple : 172.30.100.20");
+        return;
+      }
+      if(appData.virtualMachines.some(vm => vm.name.toLowerCase() === name.toLowerCase())){
+        alert("Une VM avec ce nom existe déjà.");
+        return;
+      }
+
+      appData.virtualMachines.push({ id: Date.now(), name, dedicated, ip, os, created, services });
+      saveData();
+      renderVMs();
+      populateBackupSelectors();
+      prepareReportsUI();
+      resetVmForm();
+      toast("VM ajoutée ✅");
+    }
+
+    function startEditVm(id){
+      const vm = appData.virtualMachines.find(v=>v.id===id);
+      if(!vm) return;
+
+      editVmId = id;
+      $("vm-name").value = vm.name;
+      $("vm-dedicated").value = vm.dedicated;
+      $("vm-ip").value = vm.ip;
+      $("vm-os").value = vm.os;
+      $("vm-created").value = vm.created;
+
+      Array.from($("vm-services").options).forEach(o=>{
+        o.selected = (vm.services || []).includes(o.value);
+      });
+
+      $("vm-add-btn").style.display = "none";
+      $("vm-update-btn").style.display = "inline-block";
+      $("vm-cancel-btn").style.display = "inline-block";
+      toast("Mode modification ✏️");
+    }
+
+    function updateVm(){
+      if(editVmId === null) return;
+
+      const name = $("vm-name").value.trim();
+      const dedicated = $("vm-dedicated").value;
+      const ip = $("vm-ip").value.trim();
+      const os = $("vm-os").value;
+      const created = $("vm-created").value;
+      const services = uniq(getSelectedServices());
+
+      if(!name || !ip || !os || !created){
+        alert("Veuillez remplir tous les champs obligatoires (*).");
+        return;
+      }
+      if(!isValidIPv4(ip)){
+        alert("Adresse IP invalide. Exemple : 172.30.100.20");
+        return;
+      }
+      if(appData.virtualMachines.some(vm => vm.id !== editVmId && vm.name.toLowerCase() === name.toLowerCase())){
+        alert("Une autre VM possède déjà ce nom.");
+        return;
+      }
+
+      const idx = appData.virtualMachines.findIndex(v=>v.id===editVmId);
+      if(idx === -1) return;
+
+      appData.virtualMachines[idx] = { ...appData.virtualMachines[idx], name, dedicated, ip, os, created, services };
+      appData.backups.forEach(b=>{ if(b.vmId === editVmId) b.vmName = name; });
+
+      saveData();
+      renderVMs();
+      renderBackups();
+      prepareReportsUI();
+      resetVmForm();
+      toast("VM mise à jour ✅");
+    }
+
+    function deleteVm(id){
+      const vm = appData.virtualMachines.find(v=>v.id===id);
+      if(!vm) return;
+
+      const related = appData.backups.filter(b=>b.vmId===id).length;
+      const msg = related
+        ? `Supprimer la VM "${vm.name}" ?\n\n⚠️ ${related} sauvegarde(s) associée(s) seront aussi supprimées.`
+        : `Supprimer la VM "${vm.name}" ?`;
+
+      if(!confirm(msg)) return;
+
+      appData.virtualMachines = appData.virtualMachines.filter(v=>v.id!==id);
+      appData.backups = appData.backups.filter(b=>b.vmId!==id);
+
+      saveData();
+      renderVMs();
+      renderBackups();
+      populateBackupSelectors();
+      prepareReportsUI();
+      if(editVmId === id) resetVmForm();
+      toast("VM supprimée 🗑️");
+    }
+
+    function renderVMs(){
+      const body = $("vm-table-body");
+      body.innerHTML = "";
+
+      const empty = $("vm-empty");
+      if(appData.virtualMachines.length === 0){
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      appData.virtualMachines.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(vm=>{
+        const services = uniq(vm.services || []);
+        const pills = services.length
+          ? services.map(s=>`<span class="chip"><b>svc</b>${escapeHtml(s)}</span>`).join("")
+          : `<span class="chip">Aucun</span>`;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><b>${escapeHtml(vm.name)}</b></td>
+          <td class="${vm.dedicated==='O' ? 'status-ok' : 'status-no'}">${vm.dedicated==='O' ? 'Oui' : 'Non'}</td>
+          <td><code>${escapeHtml(vm.ip)}</code></td>
+          <td>${escapeHtml(vm.os)}</td>
+          <td>${escapeHtml(vm.created)}</td>
+          <td>${pills}</td>
+          <td class="actions">
+            <button class="icon edit" data-action="edit" data-id="${vm.id}">✏️</button>
+            <button class="icon del" data-action="del" data-id="${vm.id}">🗑️</button>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+
+      body.querySelectorAll("button[data-action]").forEach(btn=>{
+        const id = Number(btn.dataset.id);
+        if(btn.dataset.action === "edit") btn.addEventListener("click", ()=>startEditVm(id));
+        if(btn.dataset.action === "del") btn.addEventListener("click", ()=>deleteVm(id));
+      });
+    }
+
+    // ===========================
+    //  BACKUPS CRUD
+    // ===========================
+    function populateBackupSelectors(){
+      const sel = $("bk-vm");
+      sel.innerHTML = `<option value="">Sélectionnez une VM</option>`;
+      appData.virtualMachines.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(vm=>{
+        const o = document.createElement("option");
+        o.value = vm.id;
+        o.textContent = vm.name;
+        sel.appendChild(o);
+      });
+
+      const loc = $("bk-location");
+      loc.innerHTML = `<option value="">Sélectionnez un lieu</option>`;
+      appData.settings.backupLocations.forEach(l=>{
+        const o = document.createElement("option");
+        o.value = l; o.textContent = l;
+        loc.appendChild(o);
+      });
+
+      $("bk-date").value = nowLocalDatetimeValue();
+    }
+
+    function isBackupDateCoherent(vm, backupDateISO){
+      const vmCreated = new Date(vm.created + "T00:00:00");
+      const backupDate = new Date(backupDateISO);
+      return backupDate >= vmCreated;
+    }
+
+    function addBackup(){
+      const vmId = Number($("bk-vm").value);
+      const date = $("bk-date").value;
+      const location = $("bk-location").value;
+      const comment = $("bk-comment").value.trim();
+
+      if(!vmId || !date || !location){
+        alert("Veuillez remplir tous les champs obligatoires (*).");
+        return;
+      }
+
+      const vm = appData.virtualMachines.find(v=>v.id===vmId);
+      if(!vm){
+        alert("VM introuvable.");
+        populateBackupSelectors();
+        return;
+      }
+
+      if(!isBackupDateCoherent(vm, date)){
+        alert("Date incohérente : la sauvegarde ne peut pas être avant la création de la VM.");
+        return;
+      }
+
+      appData.backups.push({ id: Date.now(), vmId, vmName: vm.name, date, location, comment });
+      saveData();
+      renderBackups();
+      prepareReportsUI();
+
+      $("bk-date").value = nowLocalDatetimeValue();
+      $("bk-comment").value = "";
+      toast("Sauvegarde enregistrée ✅");
+    }
+
+    function deleteBackup(id){
+      if(!confirm("Supprimer cette sauvegarde ?")) return;
+      appData.backups = appData.backups.filter(b=>b.id!==id);
+      saveData();
+      renderBackups();
+      prepareReportsUI();
+      toast("Sauvegarde supprimée 🗑️");
+    }
+
+    function renderBackups(){
+      const body = $("bk-table-body");
+      body.innerHTML = "";
+
+      const empty = $("bk-empty");
+      if(appData.backups.length === 0){
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      const sorted = appData.backups.slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+      sorted.forEach(b=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(new Date(b.date).toLocaleString("fr-FR"))}</td>
+          <td><b>${escapeHtml(b.vmName)}</b></td>
+          <td>${escapeHtml(b.location)}</td>
+          <td>${b.comment ? escapeHtml(b.comment) : '<span style="color: var(--muted);">-</span>'}</td>
+          <td><button class="icon del" data-id="${b.id}">🗑️</button></td>
+        `;
+        body.appendChild(tr);
+      });
+
+      body.querySelectorAll("button.icon.del").forEach(btn=>{
+        btn.addEventListener("click", ()=>deleteBackup(Number(btn.dataset.id)));
+      });
+    }
+
+    // ===========================
+    //  PARAMÈTRES
+    // ===========================
+    function normalizeItem(str){ return str.trim().replace(/\s+/g," "); }
+
+    function listItem(text, onDelete){
+      const div = document.createElement("div");
+      div.style.display = "flex";
+      div.style.alignItems = "center";
+      div.style.justifyContent = "space-between";
+      div.style.gap = "10px";
+      div.style.padding = "10px";
+      div.style.marginTop = "8px";
+      div.style.borderRadius = "16px";
+      div.style.border = "1px solid rgba(36,48,88,.65)";
+      div.style.background = "rgba(255,255,255,.03)";
+      div.innerHTML = `<code>${escapeHtml(text)}</code>`;
+      const b = document.createElement("button");
+      b.className = "btn bad";
+      b.style.padding = "8px 10px";
+      b.textContent = "Supprimer";
+      b.addEventListener("click", onDelete);
+      div.appendChild(b);
+      return div;
+    }
+
+    function renderSettings(){
+      const sWrap = $("p-services-list"); sWrap.innerHTML = "";
+      const lWrap = $("p-locations-list"); lWrap.innerHTML = "";
+      const oWrap = $("p-os-list"); oWrap.innerHTML = "";
+
+      appData.settings.services.slice().sort().forEach(s=>{
+        sWrap.appendChild(listItem(s, ()=> removeSetting("service", s)));
+      });
+      appData.settings.backupLocations.slice().sort().forEach(l=>{
+        lWrap.appendChild(listItem(l, ()=> removeSetting("location", l)));
+      });
+      appData.settings.operatingSystems.slice().sort().forEach(o=>{
+        oWrap.appendChild(listItem(o, ()=> removeSetting("os", o)));
+      });
+
+      populateVmSelectors();
+      populateBackupSelectors();
+      prepareReportsUI();
+    }
+
+    function addSetting(type, rawValue){
+      const val = normalizeItem(rawValue);
+      if(!val){ alert("Valeur vide."); return; }
+
+      const map = {
+        service: appData.settings.services,
+        location: appData.settings.backupLocations,
+        os: appData.settings.operatingSystems
+      };
+      const arr = map[type];
+      if(!arr) return;
+
+      if(arr.some(x=>x.toLowerCase()===val.toLowerCase())){
+        alert("Cette valeur existe déjà.");
+        return;
+      }
+
+      arr.push(val);
+      saveData();
+      renderSettings();
+      toast("Paramètre ajouté ✅");
+    }
+
+    function removeSetting(type, value){
+      if(!confirm(`Supprimer "${value}" ?`)) return;
+
+      if(type==="service"){
+        appData.settings.services = appData.settings.services.filter(x=>x.toLowerCase()!==value.toLowerCase());
+        appData.virtualMachines.forEach(vm=>{
+          vm.services = (vm.services||[]).filter(s=>s.toLowerCase()!==value.toLowerCase());
+        });
+      } else if(type==="location"){
+        appData.settings.backupLocations = appData.settings.backupLocations.filter(x=>x.toLowerCase()!==value.toLowerCase());
+      } else if(type==="os"){
+        appData.settings.operatingSystems = appData.settings.operatingSystems.filter(x=>x.toLowerCase()!==value.toLowerCase());
+      }
+
+      saveData();
+      renderSettings();
+      renderVMs();
+      toast("Paramètre supprimé 🗑️");
+    }
+
+    // ===========================
+    //  RAPPORTS
+    // ===========================
+    let selectedVMs = new Set();
+
+    function prepareReportsUI(){
+      const single = $("rp-single-vm");
+      single.innerHTML = `<option value="">Sélectionnez une VM</option>`;
+      appData.virtualMachines.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(vm=>{
+        const o=document.createElement("option");
+        o.value=vm.id; o.textContent=vm.name;
+        single.appendChild(o);
+      });
+
+      const end = new Date();
+      const start = new Date(); start.setDate(start.getDate()-30);
+      $("rp-start").value = start.toISOString().slice(0,10);
+      $("rp-end").value = end.toISOString().slice(0,10);
+
+      const box = $("rp-vm-checkboxes");
+      box.innerHTML = "";
+      appData.virtualMachines.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(vm=>{
+        const line = document.createElement("div");
+        line.style.display="flex";
+        line.style.alignItems="center";
+        line.style.justifyContent="space-between";
+        line.style.gap="10px";
+        line.style.padding="10px";
+        line.style.marginTop="8px";
+        line.style.borderRadius="16px";
+        line.style.border="1px solid rgba(36,48,88,.65)";
+        line.style.background="rgba(255,255,255,.03)";
+
+        const left = document.createElement("div");
+        left.innerHTML = `<b>${escapeHtml(vm.name)}</b> <span style="color:var(--muted);">(${escapeHtml(vm.ip)})</span>`;
+
+        const cb = document.createElement("input");
+        cb.type="checkbox";
+        cb.checked = selectedVMs.has(vm.id);
+        cb.addEventListener("change", ()=>{
+          if(cb.checked) selectedVMs.add(vm.id);
+          else selectedVMs.delete(vm.id);
+        });
+
+        line.appendChild(left);
+        line.appendChild(cb);
+        box.appendChild(line);
+      });
+
+      $("rp-preview").style.display = "none";
+      $("rp-export-html").style.display = "none";
+      $("rp-export-pdf").style.display = "none";
+      updateReportTypeUI();
+    }
+
+    function updateReportTypeUI(){
+      const type = $("rp-type").value;
+      $("rp-start-wrap").style.display = (type==="date-range") ? "block" : "none";
+      $("rp-end-wrap").style.display   = (type==="date-range") ? "block" : "none";
+      $("rp-single-wrap").style.display = (type==="single") ? "block" : "none";
+      $("rp-vm-list-wrap").style.display = (type==="selected") ? "block" : "none";
+    }
+
+    function filterBackupsForReport(){
+      const type = $("rp-type").value;
+      let list = appData.backups.slice();
+
+      if(type==="selected"){
+        list = list.filter(b => selectedVMs.has(b.vmId));
+      } else if(type==="date-range"){
+        const start = $("rp-start").value ? new Date($("rp-start").value + "T00:00:00") : null;
+        const end = $("rp-end").value ? new Date($("rp-end").value + "T23:59:59") : null;
+        list = list.filter(b=>{
+          const d = new Date(b.date);
+          if(start && d < start) return false;
+          if(end && d > end) return false;
+          return true;
+        });
+      } else if(type==="single"){
+        const vmId = Number($("rp-single-vm").value);
+        list = vmId ? list.filter(b=>b.vmId===vmId) : [];
+      }
+
+      list.sort((a,b)=> new Date(b.date) - new Date(a.date));
+      return list;
+    }
+
+    function computeStats(list){
+      const total = list.length;
+      const vms = new Set(list.map(b=>b.vmId)).size;
+      const byLocation = {};
+      list.forEach(b=>{ byLocation[b.location] = (byLocation[b.location]||0)+1; });
+      let topLoc = "-";
+      let topLocCount = 0;
+      Object.entries(byLocation).forEach(([loc,c])=>{
+        if(c>topLocCount){ topLocCount=c; topLoc=loc; }
+      });
+      const last = list[0] ? new Date(list[0].date) : null;
+      return { total, vms, topLoc, topLocCount, last };
+    }
+
+    function generateReportPreview(){
+      const type = $("rp-type").value;
+      if(type==="selected" && selectedVMs.size===0){ alert("Sélectionnez au moins une VM."); return; }
+      if(type==="single" && !$("rp-single-vm").value){ alert("Sélectionnez une VM."); return; }
+      if(type==="date-range" && (!$("rp-start").value || !$("rp-end").value)){ alert("Choisissez une période."); return; }
+
+      const list = filterBackupsForReport();
+      const stats = computeStats(list);
+
+      $("rp-preview").style.display = "block";
+      $("rp-export-html").style.display = "inline-block";
+      $("rp-export-pdf").style.display = "inline-block";
+
+      $("rp-stats").innerHTML = `
+        <div class="stat"><div class="k">Sauvegardes</div><div class="v">${stats.total}</div></div>
+        <div class="stat"><div class="k">VM concernées</div><div class="v">${stats.vms}</div></div>
+        <div class="stat"><div class="k">Lieu principal</div><div class="v">${escapeHtml(stats.topLoc)}</div></div>
+        <div class="stat"><div class="k">Dernière</div><div class="v">${stats.last ? escapeHtml(stats.last.toLocaleString("fr-FR")) : "-"}</div></div>
+      `;
+
+      const recommendations = [];
+      if(stats.last){
+        const days = Math.floor((Date.now() - stats.last.getTime()) / (1000*60*60*24));
+        if(days > 14) recommendations.push(`Dernière sauvegarde il y a <b>${days} jours</b> : augmenter la fréquence.`);
+      }
+      if(stats.topLoc !== "-" && stats.topLocCount / Math.max(1, stats.total) > 0.8) recommendations.push(`Beaucoup sur <b>${escapeHtml(stats.topLoc)}</b> : prévoir redondance (2e lieu).`);
+      if(recommendations.length===0) recommendations.push("Aucune alerte détectée.");
+
+      const recHtml = `
+        <div class="item">
+          <div class="date">Recommandations</div>
+          <div class="muted">
+            <ul style="padding-left:18px; margin-top:8px;">
+              ${recommendations.map(r=>`<li>${r}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+      `;
+
+      if(list.length===0){
+        $("rp-timeline").innerHTML = recHtml + `<div class="empty">Aucune sauvegarde pour ce rapport.</div>`;
+        return;
+      }
+
+      $("rp-timeline").innerHTML = recHtml + list.slice(0,60).map(b=>{
+        const d = new Date(b.date);
+        return `
+          <div class="item">
+            <div class="date">${escapeHtml(d.toLocaleString("fr-FR"))}</div>
+            <div><b>${escapeHtml(b.vmName)}</b> • ${escapeHtml(b.location)}</div>
+            <div class="muted">${b.comment ? escapeHtml(b.comment) : "—"}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ===========================
+    //  EXPORTS
+    // ===========================
+    function downloadTextFile(content, filename, mime){
+      const blob = new Blob([content], {type: mime});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportReportHTML(){
+      const list = filterBackupsForReport();
+      const stats = computeStats(list);
+      const type = $("rp-type").value;
+      const typeLabel = ({
+        "all":"Toutes les sauvegardes",
+        "selected":"VM sélectionnées",
+        "date-range":"Par période",
+        "single":"Par machine"
+      })[type] || "Rapport";
+
+      const title = `Rapport de sauvegardes - ${typeLabel}`;
+      const generatedAt = new Date().toLocaleString("fr-FR");
+
+      const rows = list.map(b=>{
+        const d = new Date(b.date).toLocaleString("fr-FR");
+        return `
+          <tr>
+            <td>${escapeHtml(d)}</td>
+            <td>${escapeHtml(b.vmName)}</td>
+            <td>${escapeHtml(b.location)}</td>
+            <td>${escapeHtml(b.comment || "-")}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const reportHtml = `<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>${escapeHtml(title)}</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;margin:20px;color:#111}
+h1{margin:0 0 6px}
+.muted{color:#555}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.stat{border:1px solid #ddd;border-radius:14px;padding:10px;background:#fafafa;text-align:center}
+.value{font-size:1.4rem;font-weight:900;margin-top:6px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th{background:#111;color:#fff;text-align:left;padding:10px}
+td{border-bottom:1px solid #eee;padding:10px;vertical-align:top}
+tr:nth-child(even) td{background:#fbfbfb}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+</style></head>
+<body>
+<h1>${escapeHtml(title)}</h1>
+<div class="muted">Généré le ${escapeHtml(generatedAt)}</div>
+<div class="stats">
+  <div class="stat"><div class="muted">Sauvegardes</div><div class="value">${stats.total}</div></div>
+  <div class="stat"><div class="muted">VM concernées</div><div class="value">${stats.vms}</div></div>
+  <div class="stat"><div class="muted">Lieu principal</div><div class="value">${escapeHtml(stats.topLoc)}</div></div>
+  <div class="stat"><div class="muted">Dernière</div><div class="value">${stats.last ? escapeHtml(stats.last.toLocaleString("fr-FR")) : "-"}</div></div>
+</div>
+<table><thead><tr><th>Date</th><th>VM</th><th>Lieu</th><th>Commentaire</th></tr></thead>
+<tbody>${rows || `<tr><td colspan="4" class="muted">Aucune donnée</td></tr>`}</tbody></table>
+</body></html>`;
+
+      downloadTextFile(reportHtml, `rapport_sauvegardes_${Date.now()}.html`, "text/html");
+      toast("Rapport exporté (HTML) 📄");
+    }
+
+    function exportReportPDF(){
+      window.print();
+    }
+
+    // ===========================
+    //  IMPORT / EXPORT JSON
+    // ===========================
+    function exportJSON(){
+      const payload = JSON.stringify(appData, null, 2);
+      downloadTextFile(payload, `sauvegarde_vm_manager_${Date.now()}.json`, "application/json");
+      $("impexp-status").textContent = "Export JSON effectué ✅";
+      toast("Export JSON ✅");
+    }
+
+    function importJSON(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const parsed = JSON.parse(String(reader.result || ""));
+          if(!parsed || !parsed.settings || !Array.isArray(parsed.virtualMachines) || !Array.isArray(parsed.backups)){
+            throw new Error("Structure invalide");
+          }
+          parsed.settings.services = Array.isArray(parsed.settings.services) ? parsed.settings.services : [];
+          parsed.settings.backupLocations = Array.isArray(parsed.settings.backupLocations) ? parsed.settings.backupLocations : [];
+          parsed.settings.operatingSystems = Array.isArray(parsed.settings.operatingSystems) ? parsed.settings.operatingSystems : [];
+
+          appData = parsed;
+          saveData();
+
+          populateVmSelectors();
+          populateBackupSelectors();
+          renderVMs();
+          renderBackups();
+          renderSettings();
+          prepareReportsUI();
+
+          $("impexp-status").textContent = "Import JSON réussi ✅";
+          toast("Import JSON ✅");
+        }catch{
+          alert("Import impossible : fichier JSON invalide.");
+          $("impexp-status").textContent = "Import échoué ❌";
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ===========================
+    //  RESET + DEMO
+    // ===========================
+    function resetAll(){
+      const c1 = confirm("⚠️ ATTENTION - ACTION IRRÉVERSIBLE\n\nVous allez supprimer TOUTES les données.\n\nContinuer ?");
+      if(!c1) return;
+
+      const keyword = prompt("Pour confirmer, tapez exactement : RESET");
+      if(keyword !== "RESET"){
+        alert("Réinitialisation annulée (mot-clé incorrect).");
+        return;
+      }
+
+      appData = defaultData();
+      saveData();
+      selectedVMs = new Set();
+
+      populateVmSelectors();
+      populateBackupSelectors();
+      renderVMs();
+      renderBackups();
+      renderSettings();
+      prepareReportsUI();
+      resetVmForm();
+      toast("Données réinitialisées 🔥");
+    }
+
+    function seedDemo(){
+      if(appData.virtualMachines.length || appData.backups.length){
+        if(!confirm("Des données existent déjà. Ajouter quand même des exemples ?")) return;
+      }
+      const vm1 = {id: Date.now()+1, name:"servweb", dedicated:"O", ip:"172.30.100.10", os:"Windows Server 2003", created: todayISO(), services:["web","ftp"]};
+      const vm2 = {id: Date.now()+2, name:"srvdb", dedicated:"N", ip:"172.30.100.20", os:"Ubuntu Server 20.04", created: todayISO(), services:["database","ssh"]};
+      appData.virtualMachines.push(vm1, vm2);
+
+      appData.backups.push(
+        {id: Date.now()+3, vmId: vm1.id, vmName: vm1.name, date: nowLocalDatetimeValue(), location:"NAS", comment:"Sauvegarde hebdo"},
+        {id: Date.now()+4, vmId: vm2.id, vmName: vm2.name, date: nowLocalDatetimeValue(), location:"Disque local", comment:"Avant patch sécurité"}
+      );
+
+      saveData();
+      renderVMs();
+      renderBackups();
+      populateBackupSelectors();
+      prepareReportsUI();
+      toast("Exemples ajoutés ✅");
+    }
+
+    // ===========================
+    //  QUICK ACTIONS
+    // ===========================
+    function hookQuick(){
+      $("quick-demo").addEventListener("click", seedDemo);
+      $("quick-export-json").addEventListener("click", exportJSON);
+      $("quick-reset").addEventListener("click", resetAll);
+    }
+
+    // ===========================
+    //  INIT
+    // ===========================
+    function init(){
+      initNav();
+      hookQuick();
+
+      $("vm-created").value = todayISO();
+      $("bk-date").value = nowLocalDatetimeValue();
+
+      populateVmSelectors();
+      populateBackupSelectors();
+
+      renderVMs();
+      renderBackups();
+      renderSettings();
+      prepareReportsUI();
+      refreshBadges();
+
+      $("vm-add-btn").addEventListener("click", addVm);
+      $("vm-update-btn").addEventListener("click", updateVm);
+      $("vm-cancel-btn").addEventListener("click", resetVmForm);
+
+      $("bk-add-btn").addEventListener("click", addBackup);
+
+      $("p-add-service").addEventListener("click", ()=> addSetting("service", $("p-service").value));
+      $("p-add-location").addEventListener("click", ()=> addSetting("location", $("p-location").value));
+      $("p-add-os").addEventListener("click", ()=> addSetting("os", $("p-os").value));
+
+      $("reset-btn").addEventListener("click", resetAll);
+
+      $("rp-type").addEventListener("change", updateReportTypeUI);
+      $("rp-generate").addEventListener("click", generateReportPreview);
+      $("rp-export-html").addEventListener("click", exportReportHTML);
+      $("rp-export-pdf").addEventListener("click", exportReportPDF);
+
+      $("rp-select-all").addEventListener("click", ()=>{
+        appData.virtualMachines.forEach(vm=>selectedVMs.add(vm.id));
+        prepareReportsUI();
+        toast("Tout sélectionné");
+      });
+      $("rp-deselect-all").addEventListener("click", ()=>{
+        selectedVMs.clear();
+        prepareReportsUI();
+        toast("Tout désélectionné");
+      });
+
+      $("export-json").addEventListener("click", exportJSON);
+      $("import-json-btn").addEventListener("click", ()=>{
+        if(!confirm("Importer un JSON remplacera les données actuelles. Continuer ?")) return;
+        $("import-file").click();
+      });
+      $("import-file").addEventListener("change", (e)=>{
+        const file = e.target.files && e.target.files[0];
+        if(file) importJSON(file);
+        e.target.value = "";
+      });
+
+      // Start on VMs
+      setPage("vms");
+    }
+
+    init();
+  </script>
+</body>
+</html>
