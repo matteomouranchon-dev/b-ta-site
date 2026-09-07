@@ -13,9 +13,16 @@
 <style>
   :root {
     --accent: #0ea5e9;
+    --accent-2: #6366f1;
     --dark: #0b1220;
+    --ink: #172033;
+    --muted: #64748b;
+    --surface: #ffffff;
+    --soft: #f5f8fc;
   }
-  html, body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; scroll-behavior: smooth; }
+  html, body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; scroll-behavior: smooth; color: var(--ink); }
+  body { background: var(--surface); line-height: 1.7; }
+  section { scroll-margin-top: 76px; }
   .navbar-brand strong { letter-spacing: .3px; }
   .hero {
     background: radial-gradient(1200px 600px at 85% -10%, rgba(14,165,233,.25), transparent),
@@ -24,9 +31,10 @@
     color:#fff;
   }
   .hero .avatar { width: 160px; height:160px; border-radius: 20px; object-fit: cover; border:3px solid rgba(255,255,255,.25); box-shadow: 0 15px 35px rgba(2,6,23,.3); }
-  .section-title { font-weight: 800; letter-spacing: .2px; }
+  .section-title { font-weight: 800; letter-spacing: -.02em; position: relative; display: inline-block; padding-bottom: .75rem; }
+  .section-title::after { content: ""; position: absolute; left: 0; bottom: 0; width: 52px; height: 4px; border-radius: 10px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
   .pill { background: rgba(14,165,233,.1); border:1px solid rgba(14,165,233,.2); color:#0ea5e9; padding:.4rem .7rem; border-radius:999px; font-weight:600; font-size:.9rem; }
-  .shadow-soft { box-shadow: 0 10px 35px rgba(2,6,23,.08); }
+  .shadow-soft { box-shadow: 0 12px 35px rgba(15,23,42,.08); }
   .timeline { position: relative; padding-left: 1.5rem; }
   .timeline::before { content: ""; position: absolute; left: .6rem; top: .2rem; bottom: .2rem; width: 2px; background: rgba(14,165,233,.35); }
   .tl-item { position: relative; margin-left:.5rem; padding-left:1.2rem; margin-bottom:1.2rem; }
@@ -35,9 +43,102 @@
   .skill-fill { height:100%; background: linear-gradient(90deg, var(--accent), #22c55e); }
 .fin-trimestre { position: relative; width: 100%; margin: 2rem 0; border-top: 4px solid #000;}
 .fin-trimestre span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 0 12px; font-weight: 700; color: #000; white-space: nowrap;}
- .project-card img { object-fit: cover; height: 0px; }
+ .year-tabs { display: inline-flex; gap: .5rem; padding: .45rem; margin: .5rem 0 2rem; border: 1px solid #dbe3ee; border-radius: 1rem; background: #eef3f9; }
+ .year-tab { border: 0; border-radius: .75rem; padding: .75rem 1.15rem; background: transparent; color: #526078; font-weight: 700; transition: color .2s ease, background .2s ease, box-shadow .2s ease, transform .2s ease; }
+ .year-tab:hover { color: var(--accent); transform: translateY(-1px); }
+ .year-tab.active { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 8px 18px rgba(14,165,233,.24); }
+ .year-panel[hidden] { display: none !important; }
+ .year-panel.is-entering { animation: yearPanelIn .45s ease both; }
+ .reports-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 0 0 1.35rem; padding-bottom: .8rem; border-bottom: 1px solid #e2e8f0; }
+ .reports-heading h3 { margin: 0; font-size: 1.15rem; font-weight: 800; }
+ .reports-heading span { color: var(--muted); font-size: .9rem; }
+ .reports-empty { text-align: center; padding: 3.5rem 1.5rem; border: 2px dashed #cbd5e1; border-radius: 1.25rem; background: linear-gradient(145deg,#f8fbff,#fff); }
+ .reports-empty-icon { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 1rem; border-radius: 1rem; background: rgba(14,165,233,.1); color: var(--accent); font-size: 1.65rem; }
+ .project-card { overflow: hidden; border: 1px solid rgba(148,163,184,.22); border-radius: 1.15rem; }
+ .project-card img { object-fit: cover; width: 100%; height: 210px; transition: transform .55s ease, filter .4s ease; }
+ .project-card:hover img { transform: scale(1.06); filter: saturate(1.12); }
+ .project-card .card-body { padding: 1.5rem; display: flex; flex-direction: column; }
+ .project-card .btn { margin-top: auto; align-self: flex-start; }
+ .card { border: 1px solid rgba(148,163,184,.22); border-radius: 1.15rem; }
+ .card-body { padding: 1.5rem; }
+ .bg-light { background: var(--soft) !important; }
+ section:nth-of-type(even):not(.bg-light) { background: linear-gradient(180deg, #fff, #f8fbff); }
+ .hero-stats { margin-top: 2rem; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .75rem; max-width: 670px; }
+ .hero-stat { padding: .9rem 1rem; border: 1px solid rgba(255,255,255,.14); border-radius: 1rem; background: rgba(255,255,255,.07); backdrop-filter: blur(10px); }
+ .hero-stat strong { display: block; color: #fff; font-size: 1.05rem; }
+ .hero-stat span { color: #94a3b8; font-size: .82rem; }
+ .eyebrow { color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: .13em; font-size: .75rem; margin-bottom: .35rem; }
+ .section-lead { max-width: 680px; color: var(--muted); margin: -.2rem 0 2rem; }
+ .contact-panel { background: linear-gradient(145deg, #0f172a, #172554); color: #fff; border: 0 !important; }
+ .contact-panel .text-muted, .contact-panel a { color: #cbd5e1 !important; }
+ .contact-panel .btn { border-color: rgba(255,255,255,.45); color: #fff; }
+ .form-control { min-height: 48px; border-radius: .8rem; border-color: #dbe3ee; }
+ textarea.form-control { min-height: 120px; }
+ .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 .25rem rgba(14,165,233,.13); }
   .footer { background:#0f172a; color:#cbd5e1; }
   .footer a { color:#94a3b8; }
+
+  /* ===== Animations et interactions ===== */
+  body { overflow-x: hidden; }
+  .navbar { transition: background-color .3s ease, box-shadow .3s ease, padding .3s ease; }
+  .navbar.scrolled { background-color: rgba(11,18,32,.96) !important; box-shadow: 0 8px 25px rgba(2,6,23,.18); }
+  .hero { position: relative; overflow: hidden; min-height: 520px; display: flex; align-items: center; }
+  .hero::before, .hero::after {
+    content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+    filter: blur(2px); opacity: .45; animation: floatOrb 9s ease-in-out infinite;
+  }
+  .hero::before { width: 260px; height: 260px; right: 8%; top: 10%; background: rgba(14,165,233,.22); }
+  .hero::after { width: 180px; height: 180px; left: 5%; bottom: -45px; background: rgba(99,102,241,.24); animation-delay: -4s; }
+  .hero .container { position: relative; z-index: 1; }
+  .hero h1 { animation: heroIn .8s .15s both; }
+  .hero .lead { animation: heroIn .8s .3s both; }
+  .hero .d-flex { animation: heroIn .8s .45s both; }
+  .hero .pill { animation: heroIn .7s both; }
+  .hero .avatar { animation: avatarIn .9s .2s both, avatarFloat 5s 1.2s ease-in-out infinite; transition: transform .35s ease, box-shadow .35s ease; }
+  .hero .avatar:hover { transform: translateY(-8px) rotate(1deg) scale(1.03); box-shadow: 0 22px 45px rgba(14,165,233,.25); }
+  .card, .shadow-soft { transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+  .card:hover, .shadow-soft:hover { transform: translateY(-7px); box-shadow: 0 18px 45px rgba(2,6,23,.13); border-color: rgba(14,165,233,.35) !important; }
+  .btn { transition: transform .2s ease, box-shadow .2s ease; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(14,165,233,.2); }
+  .badge { transition: transform .2s ease, background-color .2s ease; }
+  .badge:hover { transform: translateY(-3px) scale(1.04); }
+  .skill-fill { width: 0 !important; transition: width 1.2s cubic-bezier(.2,.75,.25,1); }
+  .skill-fill.animated { width: var(--skill-width) !important; }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .tl-item::before { transition: transform .3s ease, box-shadow .3s ease; }
+  .tl-item:hover::before { transform: scale(1.3); box-shadow: 0 0 0 7px rgba(14,165,233,.12); }
+  .nav-link { position: relative; }
+  .navbar .nav-link::after { content: ""; position: absolute; left: .5rem; right: .5rem; bottom: .25rem; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform .25s ease; }
+  .navbar .nav-link:hover::after, .navbar .nav-link.active::after { transform: scaleX(1); }
+  .navbar .nav-link { padding-left: .7rem !important; padding-right: .7rem !important; }
+  .navbar-brand span { box-shadow: 0 0 0 6px rgba(14,165,233,.12), 0 0 18px rgba(14,165,233,.65); }
+  @media (max-width: 991.98px) {
+    .navbar-collapse { margin-top: .8rem; padding: 1rem; border-radius: 1rem; background: #111827; }
+    .nav-item.dropdown-hover .submenu { position: static; display: block; background: transparent; box-shadow: none; padding-left: .75rem; }
+    .navbar .btn { margin: .75rem 0 0 !important; width: 100%; }
+    .hero { min-height: auto; }
+  }
+  @media (max-width: 575.98px) {
+    .hero h1 { font-size: 2.05rem; line-height: 1.12; }
+    .hero .d-flex { flex-direction: column; }
+    .hero .btn { width: 100%; }
+    .hero-stats { grid-template-columns: 1fr; }
+    section { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+    .project-card img { height: 185px; }
+    .year-tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+    .year-tab { padding: .7rem .55rem; font-size: .9rem; }
+    .reports-heading { align-items: flex-start; flex-direction: column; gap: .2rem; }
+  }
+  @keyframes heroIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes avatarIn { from { opacity: 0; transform: translateX(35px) scale(.94); } to { opacity: 1; transform: translateX(0) scale(1); } }
+  @keyframes avatarFloat { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+  @keyframes floatOrb { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-18px,20px) scale(1.08); } }
+  @keyframes yearPanelIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
 
 /* ===== Sous-menu semestre ===== */
 .nav-item.dropdown-hover {
@@ -99,8 +200,8 @@
   <a class="nav-link" href="#compte-rendu">Compte-rendu</a>
 
   <div class="submenu">
-    <a href="#semestre1">1er semestre</a>
-    <a href="#semestre2">2e semestre</a>
+    <a href="#compte-rendu" data-year-target="2025-2026">Année 2025–2026</a>
+    <a href="#compte-rendu" data-year-target="2026-2027">Année 2026–2027</a>
   </div>
 </li>
 
@@ -126,6 +227,11 @@
           <a href="#projects" class="btn btn-primary btn-lg">Voir mes projets</a>
           <a href="#contact" class="btn btn-outline-light btn-lg">Entrer en contact</a>
         </div>
+        <div class="hero-stats" aria-label="Aperçu du profil">
+          <div class="hero-stat"><strong>BTS SIO</strong><span>Option SISR</span></div>
+          <div class="hero-stat"><strong>Windows & Linux</strong><span>Administration système</span></div>
+          <div class="hero-stat"><strong>Réseaux & sécurité</strong><span>Mon domaine principal</span></div>
+        </div>
       </div>
       <div class="col-md-4 text-md-end text-center">
         <img class="avatar" src="My photo.jpg" alt="Photo de profil">
@@ -144,7 +250,7 @@
         <ul class="list-unstyled small">
           <li>📍 Basé à <strong>Gap / Curbans (05110)</strong></li>
           <li>🌐 Anglais professionnel</li>
-          <li>🎯 Ouvert aux stages/alternances en {now}</li>
+          <li>🎯 Ouvert aux stages et alternances en 2026</li>
         </ul>
       </div>
       <div class="col-lg-5">
@@ -158,12 +264,13 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </div>  
+</section>  
 
 <section id="skills" class="py-5 bg-light">
   <div class="container">
     <h2 class="section-title mb-4">Compétences</h2>
+    <p class="section-lead">Des compétences pratiques acquises en formation et consolidées à travers mes projets techniques.</p>
     <div class="row g-4">
       <div class="col-md-6">
         <div class="card shadow-soft h-100">
@@ -239,8 +346,8 @@
   <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-3">
       <h2 class="section-title m-0">Projets</h2>
-      <span class="text-muted small">Images : Unsplash</span>
     </div>
+    <p class="section-lead">Une sélection de réalisations autour des systèmes, des réseaux et de la sécurisation d’infrastructures.</p>
     <div class="row g-4">
       <!-- Project 1 -->
       <div class="col-md-4">
@@ -343,9 +450,18 @@
 
 <!-- Compte-rendu -->
 <section id="compte-rendu" class="py-5">
-<div id="semestre1"></div>
   <div class="container">
     <h2 class="section-title mb-4">Compte-rendu</h2>
+    <p class="section-lead">Choisissez une année scolaire pour afficher les travaux correspondants.</p>
+    <div class="year-tabs" role="tablist" aria-label="Années scolaires">
+      <button class="year-tab active" id="tab-2025-2026" type="button" role="tab" aria-selected="true" aria-controls="year-2025-2026" data-year="2025-2026">2025–2026</button>
+      <button class="year-tab" id="tab-2026-2027" type="button" role="tab" aria-selected="false" aria-controls="year-2026-2027" data-year="2026-2027">2026–2027</button>
+    </div>
+    <div class="year-panel" id="year-2025-2026" role="tabpanel" aria-labelledby="tab-2025-2026">
+    <div class="reports-heading" id="semestre1">
+      <h3>Année scolaire 2025–2026</h3>
+      <span>Comptes rendus actuels</span>
+    </div>
     <div class="row g-4">
        <div class="col-md-4">
         <div class="card shadow-soft h-100">
@@ -761,14 +877,29 @@
           </div>
         </div>
     </div>
-  </div>  
+    </div>
+    </div>
+
+    <div class="year-panel" id="year-2026-2027" role="tabpanel" aria-labelledby="tab-2026-2027" hidden>
+      <div class="reports-heading">
+        <h3>Année scolaire 2026–2027</h3>
+        <span>Nouvelle année</span>
+      </div>
+      <div class="reports-empty">
+        <div class="reports-empty-icon" aria-hidden="true">📁</div>
+        <h4>Les prochains comptes rendus apparaîtront ici</h4>
+        <p class="text-muted mb-0">Cette année est prête. Les travaux des premier et deuxième semestres pourront être ajoutés au fur et à mesure.</p>
+      </div>
+    </div>
+  </div>
 </section>  
   <!---section contacte----->
+<section id="contact" class="py-5">
   <div class="container">
     <h2 class="section-title mb-4">Contact</h2>
     <div class="row g-4">
       <div class="col-lg-6">
-        <div class="p-4 rounded-4 shadow-soft border h-100">
+        <div class="p-4 rounded-4 shadow-soft border h-100 contact-panel">
           <h6 class="text-uppercase text-muted">Discutons de vos besoins</h6>
           <p>N’hésitez pas à me contacter pour un stage, une alternance ou une mission freelance.</p>
           <ul class="list-unstyled">
@@ -844,8 +975,64 @@
 <!-- Bootstrap 5 Bundle (JS) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
-</body>
-</html>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+const navbar = document.querySelector('.navbar');
+const revealTargets = document.querySelectorAll('section .container > *, .timeline .tl-item');
+revealTargets.forEach((element, index) => {
+  element.classList.add('reveal');
+  element.style.transitionDelay = Math.min(index % 4, 3) * 80 + 'ms';
+});
+
+document.querySelectorAll('.skill-fill').forEach(bar => {
+  bar.style.setProperty('--skill-width', bar.style.width || '0%');
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('visible');
+    entry.target.querySelectorAll('.skill-fill').forEach(bar => bar.classList.add('animated'));
+    if (entry.target.classList.contains('skill-fill')) entry.target.classList.add('animated');
+    observer.unobserve(entry.target);
+  });
+}, { threshold: .14 });
+
+document.querySelectorAll('.reveal, .skill-fill').forEach(element => observer.observe(element));
+
+const sections = [...document.querySelectorAll('section[id], header[id]')];
+const navLinks = [...document.querySelectorAll('.navbar .nav-link[href^="#"]')];
+
+const yearTabs = [...document.querySelectorAll('.year-tab')];
+const yearPanels = [...document.querySelectorAll('.year-panel')];
+function showReportYear(year) {
+  yearTabs.forEach(tab => {
+    const selected = tab.dataset.year === year;
+    tab.classList.toggle('active', selected);
+    tab.setAttribute('aria-selected', String(selected));
+  });
+  yearPanels.forEach(panel => {
+    const selected = panel.id === 'year-' + year;
+    panel.hidden = !selected;
+    if (selected) {
+      panel.classList.add('visible');
+      panel.classList.remove('is-entering');
+      void panel.offsetWidth;
+      panel.classList.add('is-entering');
+    }
+  });
+}
+yearTabs.forEach(tab => tab.addEventListener('click', () => showReportYear(tab.dataset.year)));
+document.querySelectorAll('[data-year-target]').forEach(link => {
+  link.addEventListener('click', () => showReportYear(link.dataset.yearTarget));
+});
+
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 30);
+  const current = sections.filter(section => section.offsetTop <= window.scrollY + 160).pop();
+  navLinks.forEach(link => link.classList.toggle('active', current && link.getAttribute('href') === '#' + current.id));
+}, { passive: true });
+</script>
 </body>
 </html>
