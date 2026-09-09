@@ -20,7 +20,7 @@
     --surface: #ffffff;
     --soft: #f5f8fc;
   }
-  html, body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; scroll-behavior: smooth; color: var(--ink); }
+  html, body { max-width: 100%; overflow-x: clip; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; scroll-behavior: smooth; color: var(--ink); }
   body { background: var(--surface); line-height: 1.7; }
   section { scroll-margin-top: 76px; }
   .navbar-brand strong { letter-spacing: .3px; }
@@ -30,7 +30,8 @@
                 linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
     color:#fff;
   }
-  .hero .avatar { width: 160px; height:160px; border-radius: 20px; object-fit: cover; border:3px solid rgba(255,255,255,.25); box-shadow: 0 15px 35px rgba(2,6,23,.3); }
+  .hero-photo-wrap { display: flex; justify-content: center; align-items: center; min-height: 270px; }
+  .hero .avatar { width: clamp(190px, 16vw, 235px); height: clamp(190px, 16vw, 235px); border-radius: 26px; object-fit: cover; object-position: center; border:3px solid rgba(255,255,255,.3); box-shadow: 0 22px 55px rgba(2,6,23,.42), 0 0 0 9px rgba(255,255,255,.04); }
   .section-title { font-weight: 800; letter-spacing: -.02em; position: relative; display: inline-block; padding-bottom: .75rem; }
   .section-title::after { content: ""; position: absolute; left: 0; bottom: 0; width: 52px; height: 4px; border-radius: 10px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
   .pill { background: rgba(14,165,233,.1); border:1px solid rgba(14,165,233,.2); color:#0ea5e9; padding:.4rem .7rem; border-radius:999px; font-weight:600; font-size:.9rem; }
@@ -54,6 +55,8 @@
  .reports-heading span { color: var(--muted); font-size: .9rem; }
  .reports-empty { text-align: center; padding: 3.5rem 1.5rem; border: 2px dashed #cbd5e1; border-radius: 1.25rem; background: linear-gradient(145deg,#f8fbff,#fff); }
  .reports-empty-icon { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 1rem; border-radius: 1rem; background: rgba(14,165,233,.1); color: var(--accent); font-size: 1.65rem; }
+ .year-intro { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.5rem; padding: 1rem 1.15rem; border: 1px solid #cfe8f7; border-radius: 1rem; background: #f0f9ff; color: #334155; }
+ .year-intro-icon { flex: 0 0 auto; display: grid; place-items: center; width: 42px; height: 42px; border-radius: .8rem; background: #dff3fd; font-size: 1.2rem; }
  .project-card { overflow: hidden; border: 1px solid rgba(148,163,184,.22); border-radius: 1.15rem; }
  .project-card img { object-fit: cover; width: 100%; height: 210px; transition: transform .55s ease, filter .4s ease; }
  .project-card:hover img { transform: scale(1.06); filter: saturate(1.12); }
@@ -79,8 +82,11 @@
   .footer a { color:#94a3b8; }
 
   /* ===== Animations et interactions ===== */
-  body { overflow-x: hidden; }
+  body { overflow-x: clip; }
   .navbar { transition: background-color .3s ease, box-shadow .3s ease, padding .3s ease; }
+  .navbar > .container { max-width: 100%; padding-left: clamp(1rem, 2.2vw, 2.25rem); padding-right: clamp(1rem, 2.2vw, 2.25rem); }
+  .navbar-brand { flex: 0 0 auto; margin-right: 1rem; font-size: 1rem; }
+  .navbar .nav-link { font-size: .91rem; white-space: nowrap; }
   .navbar.scrolled { background-color: rgba(11,18,32,.96) !important; box-shadow: 0 8px 25px rgba(2,6,23,.18); }
   .hero { position: relative; overflow: hidden; min-height: 520px; display: flex; align-items: center; }
   .hero::before, .hero::after {
@@ -111,13 +117,19 @@
   .nav-link { position: relative; }
   .navbar .nav-link::after { content: ""; position: absolute; left: .5rem; right: .5rem; bottom: .25rem; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform .25s ease; }
   .navbar .nav-link:hover::after, .navbar .nav-link.active::after { transform: scaleX(1); }
-  .navbar .nav-link { padding-left: .7rem !important; padding-right: .7rem !important; }
+  .navbar .nav-link { padding-left: .48rem !important; padding-right: .48rem !important; }
   .navbar-brand span { box-shadow: 0 0 0 6px rgba(14,165,233,.12), 0 0 18px rgba(14,165,233,.65); }
   @media (max-width: 991.98px) {
     .navbar-collapse { margin-top: .8rem; padding: 1rem; border-radius: 1rem; background: #111827; }
     .nav-item.dropdown-hover .submenu { position: static; display: block; background: transparent; box-shadow: none; padding-left: .75rem; }
     .navbar .btn { margin: .75rem 0 0 !important; width: 100%; }
     .hero { min-height: auto; }
+    .hero-photo-wrap { min-height: auto; margin-top: 1rem; }
+  }
+  @media (min-width: 992px) and (max-width: 1199.98px) {
+    .navbar-brand strong { max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+    .navbar .nav-link { font-size: .83rem; padding-left: .32rem !important; padding-right: .32rem !important; }
+    .navbar .btn { font-size: .8rem; padding-left: .55rem; padding-right: .55rem; }
   }
   @media (max-width: 575.98px) {
     .hero h1 { font-size: 2.05rem; line-height: 1.12; }
@@ -126,6 +138,7 @@
     .hero-stats { grid-template-columns: 1fr; }
     section { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
     .project-card img { height: 185px; }
+    .hero .avatar { width: 180px; height: 180px; border-radius: 22px; }
     .year-tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
     .year-tab { padding: .7rem .55rem; font-size: .9rem; }
     .reports-heading { align-items: flex-start; flex-direction: column; gap: .2rem; }
@@ -233,7 +246,7 @@
           <div class="hero-stat"><strong>Réseaux & serveur management</strong><span>Mon domaine principal</span></div>
         </div>
       </div>
-      <div class="col-md-4 text-md-end text-center">
+      <div class="col-md-4 hero-photo-wrap">
         <img class="avatar" src="My photo.jpg" alt="Photo de profil">
       </div>
     </div>
@@ -885,16 +898,21 @@
         <h3>Année scolaire 2026–2027</h3>
         <span>Nouvelle année</span>
       </div>
-      <div class="reports-empty">
-        <div class="reports-empty-icon" aria-hidden="true">📁</div>
-        <h4>Les prochains comptes rendus apparaîtront ici</h4>
-        <p class="text-muted mb-0">Cette année est prête. Les travaux des premier et deuxième semestres pourront être ajoutés au fur et à mesure.</p>
-         <div class="col-md-4">
-        <div class="card shadow-soft h-100">
-          <div class="card-body">
-            <h5 class="card-title">Serveur ESXI</h5>
-            <p class="text-muted">Compte-rendu sur le management du serveur ESXI</p>
-            <a class="btn btn-outline-primary" href="pdf/Compte-rendu Le serveur de virtualisation ESXI.pdf" download>Télécharger</a>
+      <div class="year-intro">
+        <div class="year-intro-icon" aria-hidden="true">📁</div>
+        <div>
+          <strong>Comptes rendus 2026–2027</strong>
+          <div class="text-muted">Les nouveaux travaux seront ajoutés ici au fur et à mesure.</div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="card shadow-soft h-100">
+            <div class="card-body">
+              <h5 class="card-title">Serveur ESXi</h5>
+              <p class="text-muted">Compte rendu sur la gestion du serveur de virtualisation ESXi.</p>
+              <a class="btn btn-outline-primary" href="pdf/Compte-rendu Le serveur de virtualisation ESXI.pdf" download>Télécharger</a>
+            </div>
           </div>
         </div>
       </div>
