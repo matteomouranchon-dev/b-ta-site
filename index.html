@@ -188,6 +188,28 @@
   display: block;
 }
 
+/* Lecteur de comptes rendus : couleurs et arrondis du portfolio. */
+#compte-rendu [hidden] { display: none !important; }
+.report-reader { border: 1px solid #dbe3ee; border-radius: 1.15rem; overflow: hidden; background: var(--soft); margin-bottom: 2rem; scroll-margin-top: 90px; }
+.report-reader-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1.25rem 1.5rem; background: linear-gradient(135deg, #0f172a, #172554); color: white; }
+.report-reader-header h3 { font-size: 1.1rem; margin: 0; overflow-wrap: anywhere; }
+.report-reader-header .eyebrow { color: #7dd3fc; }
+.report-reader-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.report-reader-message { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted); }
+.report-reader-frame { display: block; width: 100%; height: 650px; border: 0; background: white; }
+.report-reader-note { margin: 0; padding: .75rem 1.5rem; color: var(--muted); font-size: .85rem; }
+.report-search { max-width: 560px; margin-bottom: 1rem; }
+.report-count { color: var(--muted); font-size: .9rem; margin-bottom: 1rem; }
+.reports-enhanced .year-panel > .row { max-height: 620px; overflow-y: auto; overscroll-behavior-y: contain; margin: 0; padding: .5rem .25rem 1.5rem; border: 1px solid #e2e8f0; border-radius: 1.15rem; background: var(--soft); scrollbar-color: var(--accent) #eef3f9; scrollbar-width: thin; }
+#compte-rendu .card.report-selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(14,165,233,.2); }
+#compte-rendu .card:hover { transform: translateY(-3px); }
+.report-file-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .6rem; }
+.report-file-actions .btn { font-size: .85rem; }
+@media (max-width: 575.98px) {
+  .report-reader-frame { height: 440px; }
+  .report-reader-header { padding: 1rem; }
+  .reports-enhanced .year-panel > .row { max-height: 540px; }
+}
 </style>
 </head>
 <body>
@@ -466,11 +488,32 @@
 <section id="compte-rendu" class="py-5">
   <div class="container">
     <h2 class="section-title mb-4">Compte-rendu</h2>
-    <p class="section-lead">Choisissez une année scolaire pour afficher les travaux correspondants.</p>
+    <p class="section-lead">Choisissez une année, puis consultez vos documents directement sur cette page ou téléchargez-les.</p>
+    <div class="report-reader" id="report-reader" hidden>
+      <div class="report-reader-header">
+        <div>
+          <p class="eyebrow">Lecture des comptes rendus</p>
+          <h3 id="report-reader-title" tabindex="-1">Sélectionnez un document</h3>
+        </div>
+        <div class="report-reader-actions" id="report-reader-actions" hidden>
+          <a id="report-open" class="btn btn-sm btn-outline-light" target="_blank" rel="noopener">Ouvrir dans un onglet</a>
+          <a id="report-download" class="btn btn-sm btn-primary" download>Télécharger</a>
+          <button id="report-close" type="button" class="btn btn-sm btn-outline-light">Fermer</button>
+        </div>
+      </div>
+      <div id="report-message" class="report-reader-message" role="status">Cliquez sur « Voir » dans un compte rendu pour le lire ici.</div>
+      <iframe id="report-frame" class="report-reader-frame" title="Lecture du compte rendu sélectionné" hidden></iframe>
+      <p id="report-reader-note" class="report-reader-note" hidden>Si votre navigateur n’affiche pas le PDF, utilisez « Ouvrir dans un onglet » ou « Télécharger ».</p>
+    </div>
     <div class="year-tabs" role="tablist" aria-label="Années scolaires">
       <button class="year-tab active" id="tab-2025-2026" type="button" role="tab" aria-selected="true" aria-controls="year-2025-2026" data-year="2025-2026">2025–2026</button>
       <button class="year-tab" id="tab-2026-2027" type="button" role="tab" aria-selected="false" aria-controls="year-2026-2027" data-year="2026-2027">2026–2027</button>
     </div>
+    <div class="report-search" id="report-search-wrap" hidden>
+      <label for="report-search" class="form-label">Rechercher dans cette année</label>
+      <input type="search" id="report-search" class="form-control" placeholder="Ex. : Linux, ESXi, réseau…">
+    </div>
+    <p id="report-count" class="report-count" role="status" hidden></p>
     <div class="year-panel" id="year-2025-2026" role="tabpanel" aria-labelledby="tab-2025-2026">
     <div class="reports-heading" id="semestre1">
       <h3>Année scolaire 2025–2026</h3>
@@ -979,21 +1022,29 @@
               <h5 class="card-title">escape game GLPI</h5>
               <p class="text-muted">Compte-rendu escape game GPI. nom de code : operation blackbrid.</p>
               <div class="d-flex flex-wrap gap-2">
-               <a class="btn btn-outline-primary" href="pdf/Operation_GLPI_3D.html" download>Télécharger l'opération blackbrid</a>
+                <a class="btn btn-outline-primary" href="pdf/Operation_GLPI_3D.html" download>Télécharger l'opération blackbrid</a>
                 <a class="btn btn-outline-primary" href="pdf/Opération GLPI · Feuille de route interactive.pdf" download>Télécharger</a>
               </div>
             </div>
           </div>
-     <div class="col-md-6 col-lg-4">
+        </div> <!-- Fin de la colonne GLPI -->
+
+        <!-- DEBUT COMPTE RENDU : Sauvegarde/Restauration -->
+        <div class="col-md-6 col-lg-4">
           <div class="card shadow-soft h-100">
             <div class="card-body">
               <h5 class="card-title">Sauvegarde/Restauration</h5>
               <p class="text-muted">Compte-rendu sur sauvegardes-restaurations du Serveurs Esxi.</p>
               <a class="btn btn-outline-primary" href="pdf/Compte-rendu sauvegardes-restaurations sur Serveurs Esxi.pdf" download>Télécharger</a>
+            </div>
           </div>
         </div>
-    </div>
-  </div>
+        <!-- FIN COMPTE RENDU : Sauvegarde/Restauration -->
+
+        <!-- AJOUTER UN COMPTE RENDU ICI : coller un bloc complet AVANT ce commentaire. -->
+        <!-- Copier du commentaire DEBUT COMPTE RENDU au commentaire FIN COMPTE RENDU inclus. -->
+        <!-- Modifier seulement le titre, la description et le href. Garder les trois fermetures </div>. -->
+      </div> <!-- Fin de la grille : ne pas ajouter de carte apres cette ligne -->
     </div> <!-- Fin du panneau 2026–2027 -->
   </div> <!-- Fin du conteneur des comptes rendus -->
 </section>
@@ -1083,7 +1134,7 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 const navbar = document.querySelector('.navbar');
-const revealTargets = document.querySelectorAll('section .container > :not(.year-panel), .timeline .tl-item');
+const revealTargets = document.querySelectorAll('section:not(#compte-rendu) .container > *, .timeline .tl-item');
 revealTargets.forEach((element, index) => {
   element.classList.add('reveal');
   element.style.transitionDelay = Math.min(index % 4, 3) * 80 + 'ms';
@@ -1111,6 +1162,7 @@ const navLinks = [...document.querySelectorAll('.navbar .nav-link[href^="#"]')];
 const yearTabs = [...document.querySelectorAll('.year-tab')];
 const yearPanels = [...document.querySelectorAll('.year-panel')];
 function showReportYear(year) {
+  if (!yearPanels.some(panel => panel.id === 'year-' + year)) return;
   yearTabs.forEach(tab => {
     const selected = tab.dataset.year === year;
     tab.classList.toggle('active', selected);
@@ -1126,11 +1178,119 @@ function showReportYear(year) {
       panel.classList.add('is-entering');
     }
   });
+  resetReportReader();
+  filterReports();
 }
 yearTabs.forEach(tab => tab.addEventListener('click', () => showReportYear(tab.dataset.year)));
 document.querySelectorAll('[data-year-target]').forEach(link => {
   link.addEventListener('click', () => showReportYear(link.dataset.yearTarget));
 });
+
+// Les boutons Voir sont generes automatiquement : conserver les liens de telechargement dans chaque carte.
+const reportSection = document.getElementById('compte-rendu');
+const reportFrame = document.getElementById('report-frame');
+const reportMessage = document.getElementById('report-message');
+const reportTitle = document.getElementById('report-reader-title');
+const reportActions = document.getElementById('report-reader-actions');
+const reportNote = document.getElementById('report-reader-note');
+const reportSearch = document.getElementById('report-search');
+const reportCards = [...reportSection.querySelectorAll('.year-panel .card')];
+let reportRequest = 0;
+let reportAbort;
+const normalizeReportText = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+function resetReportReader() {
+  reportRequest++;
+  if (reportAbort) reportAbort.abort();
+  reportFrame.hidden = true;
+  reportFrame.removeAttribute('src');
+  reportActions.hidden = true;
+  reportNote.hidden = true;
+  reportMessage.hidden = false;
+  reportMessage.textContent = 'Cliquez sur « Voir » dans un compte rendu pour le lire ici.';
+  reportTitle.textContent = 'Sélectionnez un document';
+  reportCards.forEach(card => card.classList.remove('report-selected'));
+}
+
+function filterReports() {
+  const panel = yearPanels.find(panel => !panel.hidden);
+  if (!panel) return;
+  const term = normalizeReportText(reportSearch.value.trim());
+  const cards = [...panel.querySelectorAll('.card')];
+  let count = 0;
+  cards.forEach(card => {
+    const match = normalizeReportText(card.querySelector('.card-title').textContent + ' ' + (card.querySelector('p')?.textContent || '')).includes(term);
+    card.parentElement.hidden = !match;
+    if (match) count++;
+  });
+  panel.querySelectorAll('.fin-trimestre, #semestre2').forEach(separator => separator.hidden = Boolean(term));
+  document.getElementById('report-count').textContent = count ? `${count} compte${count > 1 ? 's' : ''} rendu${count > 1 ? 's' : ''} sur ${cards.length}` : 'Aucun compte rendu ne correspond à votre recherche.';
+}
+
+async function viewReport(link, card) {
+  resetReportReader();
+  const request = reportRequest;
+  const url = new URL(link.getAttribute('href'), document.baseURI);
+  card.classList.add('report-selected');
+  reportTitle.textContent = card.querySelector('.card-title').textContent + ' — ' + link.textContent.trim().replace(/^Télécharger\s*/i, '').replace(/^$/, 'Compte rendu');
+  document.getElementById('report-open').href = url.href;
+  document.getElementById('report-download').href = url.href;
+  reportActions.hidden = false;
+  reportMessage.textContent = 'Chargement du document…';
+  reportTitle.focus({ preventScroll: true });
+  document.getElementById('report-reader').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  // Une iframe ne signale pas toujours les erreurs HTTP : verifier le fichier avant l'aperçu.
+  if (location.protocol !== 'file:' && url.origin === location.origin) {
+    const controller = new AbortController();
+    reportAbort = controller;
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(url.href, { method: 'HEAD', signal: controller.signal });
+      if (request !== reportRequest) return;
+      if (!response.ok && response.status !== 405 && response.status !== 501) {
+        reportMessage.textContent = 'Document indisponible : le fichier est absent ou inaccessible. Essayez de l’ouvrir dans un onglet.';
+        return;
+      }
+      if (response.ok && /text\/html/i.test(response.headers.get('content-type') || '')) {
+        reportMessage.textContent = 'Le serveur renvoie une page web au lieu du PDF attendu. Vérifiez le lien du document.';
+        return;
+      }
+    } catch (error) {
+      if (request !== reportRequest) return;
+      // Si HEAD est bloque, laisser le navigateur essayer d'afficher le PDF.
+    } finally { clearTimeout(timeout); }
+  }
+  if (request !== reportRequest) return;
+  reportMessage.hidden = true;
+  reportFrame.src = url.href;
+  reportFrame.title = reportTitle.textContent;
+  reportFrame.hidden = false;
+  reportNote.hidden = false;
+}
+
+reportCards.forEach(card => {
+  card.querySelectorAll('a[download]').forEach(link => {
+    const url = new URL(link.getAttribute('href'), document.baseURI);
+    if (!/\.pdf$/i.test(url.pathname) || /\/\.pdf$/i.test(url.pathname)) return;
+    const actions = document.createElement('div');
+    actions.className = 'report-file-actions';
+    link.before(actions);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-primary';
+    button.textContent = link.textContent.trim().replace(/^Télécharger/i, 'Voir');
+    button.setAttribute('aria-label', button.textContent + ' : ' + card.querySelector('.card-title').textContent);
+    button.addEventListener('click', () => viewReport(link, card));
+    actions.append(button, link);
+  });
+});
+reportSection.classList.add('reports-enhanced');
+document.getElementById('report-reader').hidden = false;
+document.getElementById('report-search-wrap').hidden = false;
+document.getElementById('report-count').hidden = false;
+document.getElementById('report-close').addEventListener('click', resetReportReader);
+reportSearch.addEventListener('input', filterReports);
+filterReports();
 
 window.addEventListener('scroll', () => {
   navbar.classList.toggle('scrolled', window.scrollY > 30);
